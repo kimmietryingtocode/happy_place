@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Custom Checklist Widget</title>
+        <link rel="stylesheet" href="SelfCareChecklist.css">
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Montserrat+Alternates:wght@300;400;500&display=swap" rel="stylesheet">
+    </head>
+</head>
+<body>
+
+    <div class="checklist">
+        <h2>Today, Did you...?</h2>
+        <div class="checklist-item">
+            <input type="checkbox" id="task1">
+            <input type="text" id="task1Text" placeholder="Brush Your Teeth?">
+        </div>
+        <div class="checklist-item">
+            <input type="checkbox" id="task2">
+            <input type="text" id="task2Text" placeholder="Eat Food?">
+        </div>
+        <div class="checklist-item">
+            <input type="checkbox" id="task3">
+            <input type="text" id="task3Text" placeholder="Drink Water?">
+        </div>
+        <div class="checklist-item">
+            <input type="checkbox" id="task4">
+            <input type="text" id="task4Text" placeholder="Clean Your Desk?">
+        </div>
+        <button onclick="submitChecklist()">Submit</button>
+    </div>
+
+    <script>
+        function submitChecklist() {
+            const tasks = document.querySelectorAll('.checklist-item input[type="checkbox"]');
+            let completedTasks = [];
+            
+            tasks.forEach((task, index) => {
+                const taskText = document.getElementById(`task${index + 1}Text`).value;
+                if (task.checked && taskText.trim()) {
+                    completedTasks.push(taskText);
+                }
+            });
+
+            if (completedTasks.length > 0) {
+                alert("Good Job! Today you accomplished the following: " + completedTasks.join(", "));
+            } else {
+                alert("That's okay. There's always tomorrow! <3");
+            }
+        }
+    </script>
+
+</body>
+</html>
