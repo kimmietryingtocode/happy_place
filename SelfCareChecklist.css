@@ -1,0 +1,94 @@
+/* SelfCareChecklist.css */
+
+body {
+    font-family: "Montserrat Alternates", serif;
+    font-weight: 400;
+    background-color: #f4f4f4;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+.checklist {
+    max-width: 300px;
+    margin: 0 auto;
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.checklist h2 {
+    text-align: center;
+    font-size: 24px;
+    margin-bottom: 20px;
+    color: #333;
+}
+
+.checklist-item {
+    display: flex;
+    align-items: center;
+    padding: 10px 0;
+    border-bottom: 1px solid #ddd;
+}
+
+.checklist-item:last-child {
+    border-bottom: none;
+}
+
+.checklist-item input[type="checkbox"] {
+    margin-right: 10px;
+    transform: scale(1.2);
+}
+
+.checklist-item input[type="text"] {
+    flex: 1;
+    padding: 8px;
+    font-size: 14px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    outline: none;
+}
+
+.checklist-item input[type="text"]:focus {
+    border-color: #4CAF50;
+}
+
+.checklist button {
+    margin-top: 20px;
+    padding: 12px;
+    width: 100%;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background-color 0.3s ease;
+}
+
+.checklist button:hover {
+    background-color: #45a049;
+}
+
+.montserrat-alternates-light {
+    font-family: "Montserrat Alternates", serif;
+    font-weight: 300;
+    font-style: normal;
+  }
+  
+  .montserrat-alternates-regular {
+    font-family: "Montserrat Alternates", serif;
+    font-weight: 400;
+    font-style: normal;
+  }
+  
+  .montserrat-alternates-medium {
+    font-family: "Montserrat Alternates", serif;
+    font-weight: 500;
+    font-style: normal;
+  }
+  
