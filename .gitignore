@@ -1,0 +1,13 @@
+temp/*
+temp
+
+happy-place
+happy-place/*
+
+node_modules
+node_modules/*
+
+# All files are taken - careful
+*.js
+*.json
+
