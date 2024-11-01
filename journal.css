@@ -15,8 +15,8 @@ html {
 body {
   font-family: "Montserrat Alternates", serif;
   font-weight: 300;
-  background: rgba(175, 238, 238, 0.3);
-  color: lightcoral;
+  background: rgba(237,240,245,1);
+  color: rgba(9,31,91,1);
   margin: 0 auto;
   padding: 0;
   max-width: 900px;
@@ -26,23 +26,28 @@ body {
 
 h1 {
   font-size: 3rem;
+  font-weight: 300;
 }
 
 h2 {
   font-size: 2rem;
+  font-weight: 300;
 }
 
 h3 {
   font-size: 1.5rem;
+  font-weight: 300;
 }
 
 p {
   font-size: 1rem;
+  font-weight: 300;
 }
 
 form,
 textarea {
   font-size: 1rem;
+  font-weight: 300;
 }
 
 button {
@@ -52,7 +57,7 @@ button {
   border: none;
   background-color: aquamarine;
   color: #0a2472;
-  font-family: 'Space Mono', monospace;
+  font-family: "Comfortaa", sans-serif;
 }
 
 /* Section Container Positions, Spacing, Utilities */
@@ -94,8 +99,8 @@ header {
 }
 
 .btn-main {
-  color: lightgoldenrodyellow;
-  background-color: lightcoral;
+  color: #f7f2eb;
+  background-color: rgba(9,31,91,1);
 }
 
 .btn-light {
@@ -111,8 +116,8 @@ header {
 button[class^='btn-']:hover,
 a[class^='btn-']:hover,
 input[class^='btn-']:hover {
-  background-color: lightgoldenrodyellow;
-  color: lightcoral;
+  background-color: #f7f2eb;
+  color: rgba(9,31,91,1);
   font-weight: 700;
   transform: scale(1.08);
 }
@@ -129,26 +134,26 @@ input[class^='btn-']:hover {
   padding: 1em;
   border-radius: 2px;
   border: unset;
-  background-color: lightgoldenrodyellow;
-  font-family: 'Space Mono', monospace;
+  background-color: #f7f2eb;
+  font-family: "Comfortaa", sans-serif;
 }
 
 .entry-text-title:focus {
-  outline-color: lightcoral;
-  font-family: 'Space Mono', monospace;
-  color: lightcoral;
+  outline-color: rgba(9,31,91,1);
+  font-family: "Comfortaa", sans-serif;
+  color: rgba(9,31,91,1);
   font-size: 1rem;
 }
 
 .entry-text-title::placeholder {
-  color: lightcoral;
-  font-family: 'Space Mono', monospace;
+  color: rgba(9,31,91,1);
+  font-family: "Comfortaa", sans-serif;
   font-size: 1rem;
 }
 
 .entry-text-title::-ms-value {
-  color: lightcoral;
-  font-family: 'Space Mono', monospace;
+  color: rgba(9,31,91,1);
+  font-family: "Comfortaa", sans-serif;
   font-size: 1rem;
 }
 
@@ -168,7 +173,8 @@ input[class^='btn-']:hover {
   display: block;
   line-height: 1.6;
   font-size: 1.2rem;
-  font-weight: 700;
+  font-family: "Comfortaa", sans-serif;
+  font-weight: 300;
 }
 
 .entry-text-box {
@@ -178,8 +184,8 @@ input[class^='btn-']:hover {
   padding: 1em;
   border-radius: 2px;
   border: unset;
-  background-color: lightgoldenrodyellow;
-  font-family: 'Space Mono', monospace;
+  background-color: #f7f2eb;
+  font-family: "Comfortaa", sans-serif;
 }
 
 @media (min-width: 769px) {
@@ -190,21 +196,21 @@ input[class^='btn-']:hover {
     padding: 1em;
     border-radius: 2px;
     border: unset;
-    background-color: lightgoldenrodyellow;
-    font-family: 'Space Mono', monospace;
+    background-color: #f7f2eb;
+    font-family: "Comfortaa", sans-serif;
   }
 }
 
 .entry-text-box:focus {
-  outline-color: lightcoral;
-  font-family: 'Space Mono', monospace;
-  color: lightcoral;
+  outline-color: rgba(9,31,91,1);
+  font-family: "Comfortaa", sans-serif;
+  color: rgba(9,31,91,1);
   font-size: 1rem;
 }
 
 .entry-text-box::placeholder {
-  color: lightcoral;
-  font-family: 'Space Mono', monospace;
+  color: rgba(9,31,91,1);
+  font-family: "Comfortaa", sans-serif;
   font-size: 1rem;
 }
 
@@ -238,14 +244,14 @@ input[class^='btn-']:hover {
 }
 
 .single-entry-date {
-  background-color: lightgoldenrodyellow;
+  background-color: #f7f2eb;
   width: 100%;
 }
 
 .heading-results {
   text-align: center;
   text-decoration: underline;
-  text-decoration-color: lightgoldenrodyellow;
+  text-decoration-color: #f7f2eb;
 }
 
 .montserrat-alternates-light {
@@ -263,6 +269,13 @@ input[class^='btn-']:hover {
   .montserrat-alternates-medium {
     font-family: "Montserrat Alternates", serif;
     font-weight: 500;
+    font-style: normal;
+  }
+ 
+  .comfortaa {
+    font-family: "Comfortaa", sans-serif;
+    font-optical-sizing: auto;
+    font-weight: 300;
     font-style: normal;
   }
   

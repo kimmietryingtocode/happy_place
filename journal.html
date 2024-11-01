@@ -1,22 +1,15 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <!-- Main Style Sheet -->
     <link rel="stylesheet" href="journal.css" />
-    <!-- Font Awesome -->
-   
-    <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link
-        href="https://fonts.googleapis.com/css2?family=Montserrat+Alternates:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap"
-        rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat+Alternates:wght@300;400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Comfortaa:wght@300..700&display=swap" rel="stylesheet">
     <title>My Diary App</title>
 </head>
-
 <body>
     <header>
         <h1 class="title">My Personal Journal</h1>
@@ -27,13 +20,11 @@
         <div class="container">
             <div class="container-row container-row-journal">
                 <div class="container-item container-item-journal">
-                    <form id="entryForm" action="">
+                    <form id="entryForm" action="/post">
                         <label for="entry-title" class="journal-label">Entry Title</label>
-                        <input type="text" name="entry-title" id="entry-title" class="entry-text-title"
-                            placeholder="Name of entry ✏️" />
+                        <input type="text" name="entryTitle" id="entry-title" class="entry-text-title" placeholder="Name of entry ✏️" required />
                         <label for="entry" class="journal-label">Today's Entry</label>
-                        <textarea name="daily-entry" id="entry" class="entry-text-box"
-                            placeholder="What's on your mind today? 💭"></textarea>
+                        <textarea name="dailyEntry" id="entry" class="entry-text-box" placeholder="What's on your mind today? 💭" required></textarea>
                         <button class="btn-main entry-submit-btn" type="submit">Submit</button>
                     </form>
                 </div>
@@ -48,7 +39,6 @@
         </div>
     </section>
 
-    <script src="index.js"></script>
+    <script src="journal.js"></script>
 </body>
-
 </html>
