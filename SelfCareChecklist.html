@@ -9,49 +9,113 @@
         <link rel="preconnect" href="https://fonts.googleapis.com">
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
         <link href="https://fonts.googleapis.com/css2?family=Montserrat+Alternates:wght@300;400;500&display=swap" rel="stylesheet">
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     </head>
 </head>
 <body>
 
     <div class="checklist">
         <h2>Today, Did you...?</h2>
-        <div class="checklist-item">
-            <input type="checkbox" id="task1">
-            <input type="text" id="task1Text" placeholder="Brush Your Teeth?">
+        <div id="checklistContainer">
+            <div class="checklist-item">
+                <input type="checkbox" id="task1">
+                <input type="text" id="task1Text" placeholder="Brush Your Teeth?">
+                <button class="delete-button" onclick="deleteTask(this)">❌</button>
+            </div>
+            <div class="checklist-item">
+                <input type="checkbox" id="task2">
+                <input type="text" id="task2Text" placeholder="Eat Food?">
+                <button class="delete-button" onclick="deleteTask(this)">❌</button>
+            </div>
+            <div class="checklist-item">
+                <input type="checkbox" id="task3">
+                <input type="text" id="task3Text" placeholder="Drink Water?">
+                <button class="delete-button" onclick="deleteTask(this)">❌</button>
+            </div>
+            <div class="checklist-item">
+                <input type="checkbox" id="task4">
+                <input type="text" id="task4Text" placeholder="Clean Your Desk?">
+                <button class="delete-button" onclick="deleteTask(this)">❌</button>
+            </div>
         </div>
-        <div class="checklist-item">
-            <input type="checkbox" id="task2">
-            <input type="text" id="task2Text" placeholder="Eat Food?">
-        </div>
-        <div class="checklist-item">
-            <input type="checkbox" id="task3">
-            <input type="text" id="task3Text" placeholder="Drink Water?">
-        </div>
-        <div class="checklist-item">
-            <input type="checkbox" id="task4">
-            <input type="text" id="task4Text" placeholder="Clean Your Desk?">
-        </div>
+        <input type="text" class="input" id="taskInput" placeholder="Add a new task description">
+        <button class="btn" id="addBtn">Add Task</button>
         <button onclick="submitChecklist()">Submit</button>
     </div>
 
     <script>
-        function submitChecklist() {
-            const tasks = document.querySelectorAll('.checklist-item input[type="checkbox"]');
-            let completedTasks = [];
-            
-            tasks.forEach((task, index) => {
-                const taskText = document.getElementById(`task${index + 1}Text`).value;
-                if (task.checked && taskText.trim()) {
-                    completedTasks.push(taskText);
-                }
-            });
+    const btn = document.getElementById('addBtn');
+    let taskIdCounter = 5; // Counter for unique task IDs
+    document.addEventListener("DOMContentLoaded", function() {
+    // Function to add a new task
+        function addNewItem() {
+                const taskDescription = document.getElementById('taskInput').value;
+                if (taskDescription.trim() !== '') {
+                    document.getElementById('taskInput').value = ''; // Clear input field
 
-            if (completedTasks.length > 0) {
-                alert("Good Job! Today you accomplished the following: " + completedTasks.join(", "));
-            } else {
-                alert("That's okay. There's always tomorrow! <3");
+                    // Create a new checklist item container
+                    const newItem = document.createElement('div');
+                    newItem.className = 'checklist-item';
+
+                    // Create the checkbox
+                    const checkbox = document.createElement('input');
+                    checkbox.type = 'checkbox';
+                    checkbox.id = `task${taskIdCounter}`;
+
+                    // Create the text input for the task
+                    const taskInput = document.createElement('input');
+                    taskInput.type = 'text';
+                    taskInput.id = `task${taskIdCounter}Text`;
+                    taskInput.value = taskDescription;
+                    taskInput.placeholder = 'New Task';
+
+                    // Create the delete button
+                    const deleteButton = document.createElement('button');
+                    deleteButton.className = 'delete-button';
+                    deleteButton.innerHTML = '❌';
+                    deleteButton.onclick = () => deleteTask(deleteButton);
+
+                    // Append elements to the new checklist item
+                    newItem.appendChild(checkbox);
+                    newItem.appendChild(taskInput);
+                    newItem.appendChild(deleteButton);
+
+                    // Append the new item to the checklist container
+                    document.getElementById('checklistContainer').appendChild(newItem);
+
+                    // Increment the counter for unique IDs
+                    taskIdCounter++;
+                }
             }
-        }
+
+
+            // Function to delete a task
+            function deleteTask(button) {
+                const taskItem = button.parentElement;
+                taskItem.remove();
+            }
+
+            // Function to submit the checklist
+            function submitChecklist() {
+                const tasks = document.querySelectorAll('.checklist-item');
+                let completedTasks = [];
+                
+                tasks.forEach(taskItem => {
+                    const checkbox = taskItem.querySelector('input[type="checkbox"]');
+                    const taskText = taskItem.querySelector('input[type="text"]').value;
+                    if (checkbox.checked && taskText.trim()) {
+                        completedTasks.push(taskText);
+                    }
+                });
+
+                if (completedTasks.length > 0) {
+                    alert("Good Job! Today you accomplished the following: " + completedTasks.join(", "));
+                } else {
+                    alert("That's okay. There's always tomorrow! <3");
+                }
+            }
+            btn.addEventListener('click', addNewItem);
+    });
     </script>
 
 </body>
