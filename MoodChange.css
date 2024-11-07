@@ -1,0 +1,33 @@
+body {
+    font-family: "Montserrat Alternates", serif;
+    font-weight: 400;
+    background-color: #D0E3FF;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+.mood-checker {
+    max-width: 300px;
+    margin: 0 auto;
+    justify-content: left;
+    background-color: #FFF9F0;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.color-button {
+    display: block;
+    margin: 10px auto;
+    padding: 10px 20px;
+    font-family: "Montserrat Alternates", serif;
+    font-size: 16px;
+    background-color: #F2F0DE;
+    cursor: pointer;
+    border: none;
+    border-radius: 5px;
+}
