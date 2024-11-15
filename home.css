@@ -1,99 +1,307 @@
-/* Style the body */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
 body {
-    font-family: Arial, Helvetica, sans-serif;
-    margin: 0;
+  font-family: "Montserrat Alternates", sans-serif;
+  position: relative;
+  font-size: 14px;
+  font-weight: 300;
+  background: rgba(237, 240, 245, 1);
+  background-size: 400% 400%;
+  color: rgba(9, 31, 91, 1);
+  scroll-behavior: smooth;
+  overflow-x: hidden; /* Prevent horizontal scroll due to elements overflowing */
+}
+
+@keyframes BackgroundGradient {
+  0% {
+    background-position: 0% 50%;
   }
-  
-  /* Header/logo Title */
-  .header {
-    padding: 80px;
-    text-align: center;
-    background: #1abc9c;
-    color: white;
+  50% {
+    background-position: 100% 50%;
   }
-  
-  /* Increase the font size of the heading */
-  .header h1 {
-    font-size: 40px;
+  100% {
+    background-position: 0% 50%;
   }
-  
-  /* Style the top navigation bar */
-  .navbar {
-    overflow: hidden;
-    background-color: #333;
-  }
-  
-  /* Style the navigation bar links */
-  .navbar a {
-    float: left;
-    display: block;
-    color: white;
-    text-align: center;
-    padding: 14px 20px;
-    text-decoration: none;
-  }
-  
-  /* Right-aligned link */
-  .navbar a.right {
-    float: right;
-  }
-  
-  /* Change color on hover */
-  .navbar a:hover {
-    background-color: #ddd;
-    color: black;
-  }
-  
-  /* Column container */
-  .row {  
-    display: -ms-flexbox; /* IE10 */
-    display: flex;
-    -ms-flex-wrap: wrap; /* IE10 */
-    flex-wrap: wrap;
-  }
-  
-  /* Create two unequal columns that sits next to each other */
-  /* Sidebar/left column */
-  .side {
-    -ms-flex: 30%; /* IE10 */
-    flex: 30%;
-    background-color: #f1f1f1;
-    padding: 20px;
-  }
-  
-  /* Main column */
-  .main {   
-    -ms-flex: 70%; /* IE10 */
-    flex: 70%;
-    background-color: white;
-    padding: 20px;
-  }
-  
-  /* Fake image, just for this example */
-  .fakeimg {
-    background-color: #aaa;
-    width: 100%;
-    padding: 20px;
-  }
-  
-  /* Footer */
-  .footer {
-    padding: 20px;
-    text-align: center;
-    background: #ddd;
-  }
-  
-  /* Responsive layout - when the screen is less than 700px wide, make the two columns stack on top of each other instead of next to each other */
-  @media screen and (max-width: 700px) {
-    .row {   
-      flex-direction: column;
-    }
-  }
-  
-  /* Responsive layout - when the screen is less than 400px wide, make the navigation links stack on top of each other instead of next to each other */
-  @media screen and (max-width: 400px) {
-    .navbar a {
-      float: none;
-      width: 100%;
-    }
-  }
+}
+
+header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  color: rgba(9, 31, 91, 1);
+  padding: 20px;
+  position: fixed;
+  width: 100%;
+  top: 0;
+  z-index: 1000;
+  transition: transform 0.3s ease-in-out, background-color 0.3s ease-in-out;
+}
+
+header.scrolled {
+  background-color: #FFF9EF; /* New background when scrolled */
+}
+nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+}
+
+nav ul {
+  list-style: none;
+  padding: 0;
+  margin: 10px 0;
+  display: flex;
+  gap: 15px;
+  align-items: center; 
+}
+
+nav ul li {
+  margin: 0 15px;
+}
+
+nav ul li a {
+  color: rgba(9, 31, 91, 1);
+  text-decoration: none;
+  font-size: medium;
+  font-weight: 400;
+  transition: color 0.3s ease;
+}
+
+nav ul li a:hover {
+  text-decoration: underline;
+}
+
+nav ul li.logo a img {
+  height: 50px; /* Adjust size as needed */
+  width: auto;
+  display: block;
+}
+
+.nav-buttons {
+  display: flex;
+  gap: 10px;
+}
+
+.nav-button {
+  padding: 8px 16px;
+  font-size: 0.9em;
+  color: rgba(9, 31, 91, 1);
+  background-color: #FFF9EF;
+  border: 1px solid rgba(9, 31, 91, 1);
+  border-radius: 50px;
+  cursor: pointer;
+  transition: background-color 0.3s, transform 0.3s;
+}
+
+.nav-button:hover {
+  background-color: #F2F1DF;
+  color: #fff;
+  box-shadow: 0px 4px 4px rgba(144, 89, 89, 0.25);
+  border: none;
+  transform: scale(1.05);
+}
+.home-img {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 30px 0; /* Adjust margin as needed */
+  width: 100%;
+}
+
+.home-img img {
+  max-width: 80%; /* Ensures image is responsive */
+  height: 600px;
+  object-fit: contain;
+}
+main {
+  padding-top: -10vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  height: auto;
+  z-index: -2;
+}
+
+.main-section {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  text-align: center;
+  opacity: 1;
+  visibility: visible; /* Ensure visibility is not restricted */
+  transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+  min-height: 70vh; /* Ensures each section fills the viewport */
+  z-index: -2;
+}
+
+section h2 {
+  font-size: 2.5rem;
+  margin-bottom: 20px;
+}
+
+section p {
+  font-size: 1.2rem;
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+/* Footer Styles */
+footer {
+  padding: 20px;
+  text-align: center;
+  background-color: rgba(237, 240, 245, 1);
+  color: #333;
+}
+
+/* Smooth Scroll animation */
+[data-scroll] {
+  opacity: 0;
+  transform: translateY(50px);
+  transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+}
+
+[data-scroll-in-view] {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.go {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  background: #333;
+  color: #fff;
+  padding: 10px 15px;
+  text-decoration: none;
+  border-radius: 5px;
+}
+
+
+.welcome h1 {
+  color: rgba(255, 249, 239, 1);
+  font-family: Montserrat Alternates;
+  text-shadow: 0px 4px 4px rgba(144, 89, 89, 0.25);
+  font-size: 48px;
+  z-index: 10;
+  margin: 20px 0;
+}
+
+/* Video Container */
+.welcome {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  min-height: 150vh;
+  text-align: center;
+  position: relative;
+  overflow: hidden; /* Ensure content stays within bounds */
+}
+
+/* Video Container */
+.video-container {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 70%;
+  z-index: -1;
+}
+
+/* Video Styling */
+.welcome video {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 100%;
+  height: 70%;
+  min-width: 100%;
+  min-height: 100%;
+  transform: translate(-50%, -50%);
+  object-fit: cover;
+  z-index: -1; /* Ensure video stays behind content */
+}
+
+/* Center Button Styling */
+.center-button {
+  font-family: "Montserrat Alternates", serif;
+  padding: 15px 30px;
+  font-size: 1.2em;
+  color: rgba(9, 31, 91, 1);
+  background-color: #FFF9EF;
+  border: 1px solid rgba(9, 31, 91, 1);
+  border-radius: 58px;
+  cursor: pointer;
+  margin-top: 20px;
+  transition: background-color 0.3s, transform 0.3s;
+}
+
+.center-button:hover {
+  background-color: #F2F1DF;
+  color: #fff;
+  box-shadow: 0px 4px 4px rgba(144, 89, 89, 0.25);
+  border: none;
+  transform: scale(1.1);
+}
+
+.ellipse {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(60px); /* Adjust the blur level as needed */
+  opacity: 0.7; /* Adjust opacity if desired */
+  background-color: #FFF9EF; /* Apply the desired color */
+  z-index: -2; /* Ensure ellipses are behind main content */
+}
+
+/* Example positioning of ellipses */
+/* First ellipse */
+.ellipse1 {
+  width: 500px;
+  height: 500px;
+  top: 1000px;
+  left: 50px;
+}
+
+/* Second ellipse */
+.ellipse2 {
+  width: 600px;
+  height: 600px;
+  bottom: 50px;
+  right: 20px;
+}
+
+/* Third ellipse */
+.ellipse3 {
+  width: 400px;
+  height: 400px;
+  bottom: 800px;
+  right: 300px;
+}
+
+.montserrat-alternates-light {
+  font-family: "Montserrat Alternates", serif;
+  font-weight: 300;
+  font-style: normal;
+}
+
+.montserrat-alternates-regular {
+  font-family: "Montserrat Alternates", serif;
+  font-weight: 400;
+  font-style: normal;
+}
+
+.montserrat-alternates-medium {
+  font-family: "Montserrat Alternates", serif;
+  font-weight: 400;
+  font-style: normal;
+}
