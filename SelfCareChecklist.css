@@ -1,9 +1,10 @@
-/* SelfCareChecklist.css */
+/* Global Typography & Styling from Starter Template */
 
 body {
     font-family: "Montserrat Alternates", serif;
-    font-weight: 400;
-    background-color: #f4f4f4;
+    font-weight: 300;
+    background: rgba(237, 240, 245, 1);
+    color: rgba(9, 31, 91, 1);
     margin: 0;
     padding: 0;
     display: flex;
@@ -12,10 +13,12 @@ body {
     height: 100vh;
 }
 
+/* Checklist Component Styles */
+
 .checklist {
     max-width: 300px;
     margin: 0 auto;
-    background-color: #fff;
+    background-color: #f7f2eb; /* Adjusted to match the color scheme */
     padding: 20px;
     border-radius: 8px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
@@ -23,16 +26,17 @@ body {
 
 .checklist h2 {
     text-align: center;
-    font-size: 24px;
+    font-size: 2rem; /* Consistent with the heading sizes in the template */
+    font-weight: 300; /* Match the weight of the global h2 */
     margin-bottom: 20px;
-    color: #333;
+    color: rgba(9, 31, 91, 1); /* Match text color */
 }
 
 .checklist-item {
     display: flex;
     align-items: center;
     padding: 10px 0;
-    border-bottom: 1px solid #ddd;
+    border-bottom: 1px solid rgba(211, 211, 211, 0.5); /* Subtle border color to blend with theme */
 }
 
 .checklist-item:last-child {
@@ -47,48 +51,86 @@ body {
 .checklist-item input[type="text"] {
     flex: 1;
     padding: 8px;
-    font-size: 14px;
-    border: 1px solid #ddd;
+    font-size: 1rem; /* Consistent with p and input text sizes */
+    border: 1px solid rgba(211, 211, 211, 0.5); /* Consistent border color */
     border-radius: 4px;
     outline: none;
+    font-family: "Comfortaa", sans-serif; /* Ensures input font consistency */
+}
+
+.checklist-item input[type="text"]::placeholder {
+    font-family: "Comfortaa", sans-serif; /* Change placeholder font to Comfortaa */
+    color: rgba(9, 31, 91, 0.6); /* Slightly lighter color for placeholder text */
 }
 
 .checklist-item input[type="text"]:focus {
-    border-color: #4CAF50;
+    border-color: rgba(9, 31, 91, 1); /* Match focus color to theme */
 }
 
 .checklist button {
     margin-top: 20px;
     padding: 12px;
     width: 100%;
-    background-color: #4CAF50;
-    color: white;
+    color: #f7f2eb; /* Consistent text color on buttons */
     border: none;
-    border-radius: 4px;
+    border-radius: 50px;
     cursor: pointer;
-    font-size: 16px;
+    font-size: 1.2rem; /* Match general button font size */
     transition: background-color 0.3s ease;
+    font-family: "Comfortaa", sans-serif; /* Ensures button font consistency */
 }
 
-.checklist button:hover {
-    background-color: #45a049;
+.addbtn{
+    background-color: rgba(9, 31, 91, 1);
 }
+
+.submitbtn{
+    background-color: rgba(9, 31, 91, 1);
+}
+
+.delete-button {
+    background-color: #f7f2eb;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+    margin-left: 10px; /* Optional: adjust spacing as needed */
+    display: flex;
+    align-items: center;
+}
+
+.delete-button img {
+    width: 16px; /* Set the size of the icon as needed */
+    height: 16px; /* Set the size of the icon as needed */
+}
+
+.addbtn:hover, .submitbtn:hover{
+    background-color: #f7f2eb; /* Adjust hover state to a more noticeable color */
+    color: rgba(9, 31, 91, 1);
+}
+
+/* Text Variants from Starter Template */
 
 .montserrat-alternates-light {
     font-family: "Montserrat Alternates", serif;
     font-weight: 300;
     font-style: normal;
-  }
-  
-  .montserrat-alternates-regular {
+}
+
+.montserrat-alternates-regular {
     font-family: "Montserrat Alternates", serif;
     font-weight: 400;
     font-style: normal;
-  }
-  
-  .montserrat-alternates-medium {
+}
+
+.montserrat-alternates-medium {
     font-family: "Montserrat Alternates", serif;
     font-weight: 500;
     font-style: normal;
-  }
-  
+}
+
+.comfortaa {
+    font-family: "Comfortaa", sans-serif;
+    font-optical-sizing: auto;
+    font-weight: 300;
+    font-style: normal;
+}

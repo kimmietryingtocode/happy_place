@@ -1,13 +1,22 @@
+@keyframes BackgroundGradient {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+
 body {
     font-family: "Montserrat Alternates", serif;
     font-weight: 400;
-    background-color: #D0E3FF;
     margin: 0;
     padding: 0;
     display: flex;
     justify-content: center;
     align-items: center;
     height: 100vh;
+    background: linear-gradient(132deg, #D0E3FF, #D0FFD0);
+    background-size: 400% 400%;
+    animation: BackgroundGradient 15s ease infinite;
+    transition: 1s ease;
 }
 
 .mood-checker {
@@ -30,4 +39,9 @@ body {
     cursor: pointer;
     border: none;
     border-radius: 5px;
+    transition: background-color 0.3s ease;
+}
+
+.color-button:hover {
+    background-color: #e0e0e0;
 }

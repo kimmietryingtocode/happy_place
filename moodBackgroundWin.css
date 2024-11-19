@@ -1,0 +1,55 @@
+.mood-checker {
+    max-width: 400px;
+    margin: 0 auto;
+    background-color: #FFF9F0;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    width: 400px;
+    height: auto;
+    overflow: auto;
+}
+.mood-checker .header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    color: rgba(9,31,91,1);
+    padding: 10px;
+    border-radius: 8px 8px 0 0;
+    cursor: move;
+}
+.mood-checker .close-button {
+    font-size: 30px;
+    cursor: pointer;
+    position: absolute;
+    top: 10px;
+    right: 10px;
+}
+.mood-checker .resize-handle {
+    width: 16px;
+    height: 16px;
+    background-color: #ccc;
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    cursor: se-resize;
+    border-radius: 2px;
+}
+.color-button {
+    display: block;
+    margin: 10px auto;
+    padding: 10px 20px;
+    font-family: "Montserrat Alternates", serif;
+    font-size: 16px;
+    background-color: #F2F0DE;
+    cursor: pointer;
+    border: none;
+    border-radius: 5px;
+    transition: background-color 0.3s ease;
+}
+.color-button:hover {
+    background-color: #e0e0e0;
+}

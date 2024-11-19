@@ -1,0 +1,160 @@
+.journal {
+    max-width: 400px;
+    margin: 0 auto;
+    background-color: #FFF9F0;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    width: 400px;
+    height: auto;
+    overflow: auto;
+    z-index: 1000;
+}
+
+/* Header for Pop-up with Close Button */
+.journal .header {
+    display: flex;
+    height: 20px;
+    justify-content: space-between;
+    align-items: flex-start;
+    color: rgba(9,31,91,1);
+    padding: 10px;
+    border-radius: 8px 8px 0 0;
+    cursor: move;
+}
+
+.journal .close-button {
+    font-size: 30px;
+    cursor: pointer;
+}
+
+/* Global Typography */
+
+h1 {
+    font-size: 2rem;
+    font-weight: 300;
+}
+
+h2 {
+    font-size: 1.5rem;
+    font-weight: 300;
+}
+
+h3 {
+    font-size: 1.2rem;
+    font-weight: 300;
+}
+
+p, form, textarea {
+    font-size: 1rem;
+    font-weight: 300;
+}
+
+button {
+    display: block;
+    font-size: 1rem;
+    padding: 0.5em 1em;
+    border: none;
+    background-color: aquamarine;
+    color: #0a2472;
+    font-family: "Comfortaa", sans-serif;
+}
+
+/* Container Styles */
+
+.section {
+    padding: 1em;
+    margin: 0 auto;
+}
+
+/* Entry Form Styles */
+
+.entry-text-title {
+    width: 100%;
+    margin: 1em 0;
+    padding: 0.5em;
+    border-radius: 4px;
+    border: 1px solid rgba(9,31,91,0.2);
+    background-color: #f7f2eb;
+    font-family: "Comfortaa", sans-serif;
+}
+
+.entry-text-title:focus {
+    outline-color: rgba(9,31,91,1);
+}
+
+.entry-text-box {
+    width: 100%;
+    height: 10em;
+    margin: 1em 0;
+    padding: 0.5em;
+    border-radius: 4px;
+    border: 1px solid rgba(9,31,91,0.2);
+    background-color: #f7f2eb;
+    font-family: "Comfortaa", sans-serif;
+}
+
+.entry-text-box:focus {
+    outline-color: rgba(9,31,91,1);
+}
+
+.btn-main {
+    color: #f7f2eb;
+    background-color: rgba(9,31,91,1);
+    padding: 0.5em 1em;
+    margin: 0.5em 0;
+    border-radius: 4px;
+    transition: background-color 0.3s ease;
+}
+
+.btn-main:hover {
+    background-color: #f7f2eb;
+    color: rgba(9,31,91,1);
+}
+
+/* Journal Results Section */
+
+.sectionEntryResults {
+    margin-top: 1em;
+}
+
+.entryResultRow {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.single-entry-div {
+    max-width: 100%;
+    margin: 1em 0;
+    padding: 0.5em;
+    background-color: #f7f2eb;
+    border-radius: 4px;
+}
+
+.single-entry-date {
+    font-size: 0.9rem;
+    color: rgba(9,31,91,0.7);
+}
+
+.heading-results {
+    text-align: center;
+    font-size: 1.2rem;
+    margin-top: 1em;
+}
+
+/* Resizable Handle */
+.resize-handle {
+    width: 16px;
+    height: 16px;
+    background-color: #ccc;
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    cursor: se-resize;
+    border-radius: 2px;
+}

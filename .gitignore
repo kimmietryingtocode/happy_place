@@ -8,6 +8,5 @@ node_modules
 node_modules/*
 
 # All files are taken - careful
-*.js
 *.json
 

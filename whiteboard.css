@@ -61,3 +61,14 @@ body {
   button:focus {
     outline: none;
   }
+
+  .saved-drawing-container {
+    margin-top: 10px;
+    display: inline-block;
+  }
+  
+  .saved-drawing {
+    max-width: 200px;
+    border: 1px solid #ccc;
+    margin-right: 10px;
+  }

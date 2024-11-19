@@ -230,6 +230,7 @@ footer {
   transform: translate(-50%, -50%);
   object-fit: cover;
   z-index: -1; /* Ensure video stays behind content */
+  opacity: 0.8;
 }
 
 /* Center Button Styling */

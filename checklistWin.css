@@ -1,0 +1,145 @@
+/* Checklist Pop-up Container Styles */
+
+.checklist {
+    max-width: 400px;
+    margin: 0 auto;
+    background-color: #FFF9F0;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    width: 400px;
+    height: auto;
+    overflow: auto;
+    z-index: 1000;
+}
+
+/* Header for Pop-up Window with Close Button */
+.checklist .header {
+    display: flex;
+    justify-content: flex-end;
+    height: 20px;
+    padding-bottom: 10px;
+}
+
+.checklist .close-button {
+    font-size: 24px;
+    cursor: pointer;
+    background: none;
+    border: none;
+    color: rgba(9, 31, 91, 1);
+    margin: -10px;
+}
+
+/* Title Styles */
+.checklist h2 {
+    text-align: center;
+    font-size: 2rem;
+    font-weight: 300;
+    margin-bottom: 20px;
+    color: rgba(9, 31, 91, 1);
+}
+
+/* Checklist Item Styles */
+.checklist-item {
+    display: flex;
+    align-items: center;
+    padding: 10px 0;
+    border-bottom: 1px solid rgba(211, 211, 211, 0.5);
+}
+
+.checklist-item:last-child {
+    border-bottom: none;
+}
+
+.checklist-item input[type="checkbox"] {
+    margin-right: 10px;
+    transform: scale(1.2);
+}
+
+.checklist-item input[type="text"] {
+    flex: 1;
+    padding: 8px;
+    font-size: 1rem;
+    border: 1px solid rgba(211, 211, 211, 0.5);
+    border-radius: 4px;
+    outline: none;
+    font-family: "Comfortaa", sans-serif;
+    background-color: #FFF9F0;
+}
+
+.checklist-item input[type="text"]::placeholder {
+    font-family: "Comfortaa", sans-serif;
+    color: rgba(9, 31, 91, 0.6);
+}
+
+.checklist-item input[type="text"]:focus {
+    border-color: rgba(9, 31, 91, 1);
+}
+
+/* Button Styles */
+.checklist button {
+    margin-top: 15px;
+    padding: 12px;
+    width: 100%;
+    color: #f7f2eb;
+    border: none;
+    border-radius: 50px;
+    cursor: pointer;
+    font-size: 1.2rem;
+    transition: background-color 0.3s ease;
+    font-family: "Comfortaa", sans-serif;
+}
+
+.addbtn, .submitbtn {
+    background-color: rgba(9, 31, 91, 1);
+}
+
+.addbtn:hover, .submitbtn:hover {
+    background-color: #f7f2eb;
+    color: rgba(9, 31, 91, 1);
+}
+
+/* Delete Button Styles */
+.delete-button {
+    background-color: transparent;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+    margin-left: 10px;
+    display: flex;
+    align-items: center;
+}
+
+.delete-button img {
+    width: 16px;
+    height: 16px;
+}
+
+/* Additional Styling for Text Variants (Optional, if needed) */
+.montserrat-alternates-light {
+    font-family: "Montserrat Alternates", serif;
+    font-weight: 300;
+    font-style: normal;
+}
+
+.montserrat-alternates-regular {
+    font-family: "Montserrat Alternates", serif;
+    font-weight: 400;
+    font-style: normal;
+}
+
+.montserrat-alternates-medium {
+    font-family: "Montserrat Alternates", serif;
+    font-weight: 500;
+    font-style: normal;
+}
+
+.comfortaa {
+    font-family: "Comfortaa", sans-serif;
+    font-optical-sizing: auto;
+    font-weight: 300;
+    font-style: normal;
+}

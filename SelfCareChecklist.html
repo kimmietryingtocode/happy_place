@@ -1,54 +1,58 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Custom Checklist Widget</title>
-        <link rel="stylesheet" href="SelfCareChecklist.css">
-        <link rel="preconnect" href="https://fonts.googleapis.com">
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-        <link href="https://fonts.googleapis.com/css2?family=Montserrat+Alternates:wght@300;400;500&display=swap" rel="stylesheet">
-        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-    </head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Custom Checklist Widget</title>
+    <link rel="stylesheet" href="SelfCareChecklist.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat+Alternates:wght@300;400;500&display=swap" rel="stylesheet">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 </head>
 <body>
 
     <div class="checklist">
         <h2>Today, Did you...?</h2>
+        
+        <!-- Checklist Container -->
         <div id="checklistContainer">
             <div class="checklist-item">
                 <input type="checkbox" id="task1">
                 <input type="text" id="task1Text" placeholder="Brush Your Teeth?">
-                <button class="delete-button" onclick="deleteTask(this)">❌</button>
+                <button class="delete-button" onclick="deleteTask(this)"><img src="images/xmark-solid.svg"></button>
             </div>
             <div class="checklist-item">
                 <input type="checkbox" id="task2">
                 <input type="text" id="task2Text" placeholder="Eat Food?">
-                <button class="delete-button" onclick="deleteTask(this)">❌</button>
+                <button class="delete-button" onclick="deleteTask(this)"><img src="images/xmark-solid.svg"></button>
             </div>
             <div class="checklist-item">
                 <input type="checkbox" id="task3">
                 <input type="text" id="task3Text" placeholder="Drink Water?">
-                <button class="delete-button" onclick="deleteTask(this)">❌</button>
+                <button class="delete-button" onclick="deleteTask(this)"><img src="images/xmark-solid.svg"></button>
             </div>
             <div class="checklist-item">
                 <input type="checkbox" id="task4">
                 <input type="text" id="task4Text" placeholder="Clean Your Desk?">
-                <button class="delete-button" onclick="deleteTask(this)">❌</button>
+                <button class="delete-button" onclick="deleteTask(this)"><img src="images/xmark-solid.svg"></button>
             </div>
         </div>
+        
+        <!-- Input for New Task -->
         <input type="text" class="input" id="taskInput" placeholder="Add a new task description">
-        <button class="btn" id="addBtn">Add Task</button>
-        <button onclick="submitChecklist()">Submit</button>
+        <button class="addbtn" id="addBtn">Add Task</button>
+        <button class="submitbtn" onclick="submitChecklist()">Submit</button>
     </div>
 
+    <!-- JavaScript -->
     <script>
-    const btn = document.getElementById('addBtn');
-    let taskIdCounter = 5; // Counter for unique task IDs
-    document.addEventListener("DOMContentLoaded", function() {
-    // Function to add a new task
-        function addNewItem() {
+        document.addEventListener("DOMContentLoaded", function() {
+            const btn = document.getElementById('addBtn');
+            let taskIdCounter = 0; // Counter for unique task IDs
+
+            // Function to add a new task
+            function addNewItem() {
                 const taskDescription = document.getElementById('taskInput').value;
                 if (taskDescription.trim() !== '') {
                     document.getElementById('taskInput').value = ''; // Clear input field
@@ -72,7 +76,7 @@
                     // Create the delete button
                     const deleteButton = document.createElement('button');
                     deleteButton.className = 'delete-button';
-                    deleteButton.innerHTML = '❌';
+                    deleteButton.innerHTML = '<img src="images/xmark-solid.svg">';
                     deleteButton.onclick = () => deleteTask(deleteButton);
 
                     // Append elements to the new checklist item
@@ -89,33 +93,50 @@
             }
 
 
-            // Function to delete a task
-            function deleteTask(button) {
+            // Attach event listener to the Add button
+            btn.addEventListener('click', addNewItem);
+        });
+
+        function deleteTask(button) {
                 const taskItem = button.parentElement;
                 taskItem.remove();
             }
 
-            // Function to submit the checklist
-            function submitChecklist() {
-                const tasks = document.querySelectorAll('.checklist-item');
-                let completedTasks = [];
-                
-                tasks.forEach(taskItem => {
-                    const checkbox = taskItem.querySelector('input[type="checkbox"]');
-                    const taskText = taskItem.querySelector('input[type="text"]').value;
-                    if (checkbox.checked && taskText.trim()) {
-                        completedTasks.push(taskText);
-                    }
-                });
+        function submitChecklist() {
+        const tasks = [];
+        const taskItems = document.querySelectorAll('.checklist-item');
 
-                if (completedTasks.length > 0) {
-                    alert("Good Job! Today you accomplished the following: " + completedTasks.join(", "));
-                } else {
-                    alert("That's okay. There's always tomorrow! <3");
-                }
-            }
-            btn.addEventListener('click', addNewItem);
-    });
+        // Loop through each checklist item and get the task description and completion status
+        taskItems.forEach(taskItem => {
+            const checkbox = taskItem.querySelector('input[type="checkbox"]');
+            const taskInput = taskItem.querySelector('input[type="text"]');
+
+            // Get task description (use placeholder if text is empty)
+            const taskDescription = taskInput.value.trim() || taskInput.placeholder;
+            const completed = checkbox.checked;
+
+            // Add task data to the array
+            tasks.push({ taskDescription, completed });
+        });
+
+        // Send the tasks data to the server
+        fetch('http://localhost:3010/submit-checklist', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ tasks }),
+        })
+        .then(response => response.json())
+        .then(data => {
+            alert(data.message);
+        })
+        .catch(error => {
+            console.error("Error submitting checklist:", error);
+            alert("Failed to submit the checklist. Please check the console for more details.");
+        });
+    }
+        
     </script>
 
 </body>
