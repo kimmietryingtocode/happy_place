@@ -24,3 +24,7 @@ window.addEventListener('scroll', () => {
   // Update the previous scroll position
   previousScrollPosition = currentScrollPosition;
 });
+
+function goToPlace() {
+  window.location.href = 'place.html'; // Replace 'place.html' with the actual path if it's in a subdirectory
+}
