@@ -1,14 +1,31 @@
 const entryForm = document.querySelector('#entryForm');
 const entryResultsSection = document.querySelector('#entryResultsSection');
 const entryResultRow = document.querySelector('.entryResultRow');
-const getEntryTitle = document.querySelector('.entry-text-title'); // Changed to querySelector for a single element
-const getEntryText = document.querySelector('.entry-text-box'); // Changed to querySelector for a single element
+const getEntryTitle = document.querySelector('.entry-text-title'); // Single title input
+const getEntryText = document.querySelector('.entry-text-box'); // Contenteditable div
+const boldBtn = document.querySelector('#boldBtn');
+const italicBtn = document.querySelector('#italicBtn');
+const underlineBtn = document.querySelector('#underlineBtn');
 
+// Function to apply formatting
+function formatText(button, command) {
+    document.execCommand(command, false, null); // Apply the formatting command
+    button.classList.toggle('active'); // Toggle the "active" class
+}
+
+// Attach event listeners to formatting buttons
+boldBtn.addEventListener('click', () => formatText(boldBtn,'bold'));
+italicBtn.addEventListener('click', () => formatText(italicBtn,'italic'));
+underlineBtn.addEventListener('click', () => formatText(underlineBtn,'underline'));
+
+
+
+// Add entry to DOM
 async function addEntryToDom(event) {
     event.preventDefault();
 
     const entryTitle = getEntryTitle.value.trim();
-    const dailyEntry = getEntryText.value.trim();
+    const dailyEntry = getEntryText.innerHTML.trim(); // Use innerHTML to preserve formatting
 
     if (!entryTitle || !dailyEntry) {
         alert("Please fill out both the title and the entry.");
@@ -17,7 +34,7 @@ async function addEntryToDom(event) {
 
     // Send the data to the server
     try {
-        const response = await fetch('http://localhost:3010/post', { // Adjusted to use full URL for clarity
+        const response = await fetch('http://localhost:3010/post', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -39,7 +56,7 @@ async function addEntryToDom(event) {
 
     // Clear input fields after submission
     getEntryTitle.value = '';
-    getEntryText.value = '';
+    getEntryText.innerHTML = ''; // Clear the rich text editor
 }
 
 // Function to display entry on the page
@@ -72,7 +89,7 @@ function displayEntry(title, text) {
 
     const entryParagraph = document.createElement('p');
     entryParagraph.className = 'single-entry-text';
-    entryParagraph.textContent = text;
+    entryParagraph.innerHTML = text; // Use innerHTML to preserve formatting
 
     // Append elements to entryDiv and then to entryResultRow
     entryDiv.appendChild(entryHeading);
