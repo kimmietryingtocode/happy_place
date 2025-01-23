@@ -2,7 +2,10 @@ const canvas = document.getElementById("whiteboard");
 const context = canvas.getContext("2d");
 
 let drawing = false;
+let isErasing = false; // Flag to toggle between drawing and erasing
+let lastDrawingColor = "#000000"; // Default drawing color (black)
 
+// Event listener for canvas
 canvas.addEventListener("mousedown", () => {
   drawing = true;
   context.beginPath();
@@ -32,64 +35,53 @@ function draw(e) {
   );
 }
 
-
-
+// Clear button
 const clearButton = document.getElementById("clear-btn");
 
 clearButton.addEventListener("click", () => {
-  context.clearRect(0,0, canvas.width, canvas.height);
+  context.clearRect(0, 0, canvas.width, canvas.height);
 });
 
-
-
+// Color picker
 const colorPicker = document.getElementById("color-picker");
 
 colorPicker.addEventListener("input", (e) => {
-  context.strokeStyle = e.target.value;
+  lastDrawingColor = e.target.value; // Update the last drawing color
+  context.strokeStyle = lastDrawingColor;
+  isErasing = false; // Switch back to drawing mode when a color is picked
+  eraserButton.textContent = "Eraser"; // Update button text
 });
 
-
-
+// Brush size
 const brushSizeInput = document.getElementById("brush-size");
 
 brushSizeInput.addEventListener("input", (e) => {
   context.lineWidth = e.target.value;
 });
 
-// Function to display saved drawings on the page
-function displaySavedDrawing(imageData) {
-  // Create a container for the saved image
-  const imageContainer = document.createElement('div');
-  imageContainer.className = 'saved-drawing-container';
+// Eraser button
+const eraserButton = document.getElementById("eraser-btn");
 
-  // Create an img element to display the drawing
-  const img = document.createElement('img');
-  img.src = imageData; // Use the base64 data URL passed as an argument
-  img.className = 'saved-drawing';
-  img.style.width = '200px'; // You can set any size you prefer for display
-  img.style.height = 'auto'; // Maintain aspect ratio
+eraserButton.addEventListener("click", () => {
+  isErasing = !isErasing; // Toggle erasing mode
 
-  // Append the img element to the container and then to the page
-  imageContainer.appendChild(img);
-
-  // Assuming there is a container to append the saved drawings, adjust as needed
-  const entryResultRow = document.querySelector('.entryResultRow');
-  if (entryResultRow) {
-    entryResultRow.appendChild(imageContainer);
+  if (isErasing) {
+    eraserButton.textContent = "Drawing Mode"; // Update button text
+    context.strokeStyle = "#f7f2eb"; // Set the strokeStyle to white (background color)
   } else {
-    console.warn('Container for saved drawings not found');
+    eraserButton.textContent = "Eraser"; // Update button text
+    context.strokeStyle = lastDrawingColor; // Restore the last drawing color
   }
-}
+});
 
+// Save button
 const saveButton = document.getElementById("save-btn");
 
-// Function to save the current drawing as an image
 saveButton.addEventListener("click", async () => {
-  const imageData = canvas.toDataURL("image/png"); // Get the canvas data as a Base64 string
+  const imageData = canvas.toDataURL("image/png");
 
-  // Send the image data to the server
   try {
-    const response = await fetch('http://localhost:3010/save-drawing', { // Ensure correct URL
+    const response = await fetch('http://localhost:3010/save-drawing', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -103,8 +95,29 @@ saveButton.addEventListener("click", async () => {
 
     const result = await response.json();
     console.log(result.message);
-    displaySavedDrawing(imageData); // Display the saved drawing on the page
+    displaySavedDrawing(imageData);
   } catch (error) {
     console.error("Failed to save drawing:", error);
   }
 });
+
+// Display saved drawings
+function displaySavedDrawing(imageData) {
+  const imageContainer = document.createElement('div');
+  imageContainer.className = 'saved-drawing-container';
+
+  const img = document.createElement('img');
+  img.src = imageData;
+  img.className = 'saved-drawing';
+  img.style.width = '200px';
+  img.style.height = 'auto';
+
+  imageContainer.appendChild(img);
+
+  const entryResultRow = document.querySelector('.entryResultRow');
+  if (entryResultRow) {
+    entryResultRow.appendChild(imageContainer);
+  } else {
+    console.warn('Container for saved drawings not found');
+  }
+}
