@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mood Tracker</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #e7f6fc;
+            color: #333;
+            text-align: center;
+            margin: 0;
+            padding: 0;
+        }
+        h1 {
+            margin-top: 20px;
+            font-size: 2rem;
+            color: #2a72a8;
+        }
+        .container {
+            margin: 20px auto;
+            padding: 20px;
+            width: 90%;
+            max-width: 300px;
+            background-color: #ffffff;
+            border-radius: 15px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        .emoji-button {
+            font-size: 2rem;
+            background-color: #d9effa;
+            border: none;
+            border-radius: 50%;
+            width: 60px;
+            height: 60px;
+            margin: 10px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        .emoji-button:hover {
+            background-color: #c2e3f5;
+        }
+    </style>
+</head>
+<body>
+    <h1>Mood Tracker</h1>
+    <div class="container">
+        <button class="emoji-button" data-mood="Happy">🙂</button>
+        <button class="emoji-button" data-mood="Sad">🙁</button>
+        <button class="emoji-button" data-mood="Angry">😠</button>
+        <button class="emoji-button" data-mood="Anxious">😟</button>
+        <button class="emoji-button" data-mood="Calm">😌</button>
+        <button class="emoji-button" data-mood="Tired">😴</button>
+    </div>
+    <script>
+        const buttons = document.querySelectorAll('.emoji-button');
+        
+        buttons.forEach(button => {
+            button.addEventListener('click', () => {
+                const mood = button.getAttribute('data-mood');
+                alert(`Mood saved!\n\nYou are feeling: ${mood}`);
+            });
+        });
+    </script>
+</body>
+</html>
+
+
+
