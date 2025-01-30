@@ -47,96 +47,131 @@
 
     <!-- JavaScript -->
     <script>
-        document.addEventListener("DOMContentLoaded", function() {
-            const btn = document.getElementById('addBtn');
-            let taskIdCounter = 0; // Counter for unique task IDs
+        document.addEventListener("DOMContentLoaded", async function () {
+            await fetchChecklist(); // Fetch stored checklist tasks when the page loads
+        });
 
-            // Function to add a new task
-            function addNewItem() {
-                const taskDescription = document.getElementById('taskInput').value;
-                if (taskDescription.trim() !== '') {
-                    document.getElementById('taskInput').value = ''; // Clear input field
+        const btn = document.getElementById('addBtn');
+        const checklistContainer = document.getElementById('checklistContainer');
+        let taskIdCounter = 0; // Counter for unique task IDs
 
-                    // Create a new checklist item container
-                    const newItem = document.createElement('div');
-                    newItem.className = 'checklist-item';
+        // Function to add a new task
+        function addNewItem(taskId = null, taskDescription = "", completed = false) {
+            if (!taskDescription && taskId === null) {
+                taskDescription = document.getElementById('taskInput').value.trim();
+                if (taskDescription === '') return;
+                document.getElementById('taskInput').value = ''; // Clear input field
+            }
 
-                    // Create the checkbox
-                    const checkbox = document.createElement('input');
-                    checkbox.type = 'checkbox';
-                    checkbox.id = `task${taskIdCounter}`;
+            // Create a new checklist item container
+            const newItem = document.createElement('div');
+            newItem.className = 'checklist-item';
+            newItem.dataset.taskId = taskId; // Store task ID for deletion
 
-                    // Create the text input for the task
-                    const taskInput = document.createElement('input');
-                    taskInput.type = 'text';
-                    taskInput.id = `task${taskIdCounter}Text`;
-                    taskInput.value = taskDescription;
-                    taskInput.placeholder = 'New Task';
+            // Create the checkbox
+            const checkbox = document.createElement('input');
+            checkbox.type = 'checkbox';
+            checkbox.checked = completed;
+            checkbox.addEventListener('change', () => updateTaskStatus(taskId, checkbox.checked)); // Update task completion status
 
-                    // Create the delete button
-                    const deleteButton = document.createElement('button');
-                    deleteButton.className = 'delete-button';
-                    deleteButton.innerHTML = '<img src="images/xmark-solid.svg">';
-                    deleteButton.onclick = () => deleteTask(deleteButton);
+            // Create the text input for the task
+            const taskInput = document.createElement('input');
+            taskInput.type = 'text';
+            taskInput.value = taskDescription;
+            taskInput.placeholder = 'New Task';
 
-                    // Append elements to the new checklist item
-                    newItem.appendChild(checkbox);
-                    newItem.appendChild(taskInput);
-                    newItem.appendChild(deleteButton);
+            // Create the delete button
+            const deleteButton = document.createElement('button');
+            deleteButton.className = 'delete-button';
+            deleteButton.innerHTML = '<img src="images/xmark-solid.svg">';
+            deleteButton.onclick = () => deleteTask(newItem, taskId);
 
-                    // Append the new item to the checklist container
-                    document.getElementById('checklistContainer').appendChild(newItem);
+            // Append elements to the new checklist item
+            newItem.appendChild(checkbox);
+            newItem.appendChild(taskInput);
+            newItem.appendChild(deleteButton);
 
-                    // Increment the counter for unique IDs
-                    taskIdCounter++;
+            // Append the new item to the checklist container
+            checklistContainer.appendChild(newItem);
+        }
+
+        // Attach event listener to the Add button
+        btn.addEventListener('click', async () => {
+            const taskDescription = document.getElementById('taskInput').value.trim();
+            if (taskDescription === '') return;
+
+            try {
+                const response = await fetch('http://localhost:3010/add-checklist-task', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ taskDescription, completed: false }),
+                });
+
+                if (!response.ok) {
+                    throw new Error(`Server error: ${response.status} ${response.statusText}`);
                 }
+
+                const result = await response.json();
+                addNewItem(result.taskId, taskDescription, false);
+            } catch (error) {
+                console.error("Error adding task:", error);
             }
-
-
-            // Attach event listener to the Add button
-            btn.addEventListener('click', addNewItem);
         });
 
-        function deleteTask(button) {
-                const taskItem = button.parentElement;
-                taskItem.remove();
+        // Function to delete a task
+        async function deleteTask(taskElement, taskId) {
+            try {
+                const response = await fetch(`http://localhost:3010/delete-checklist-task/${taskId}`, {
+                    method: 'DELETE',
+                });
+
+                if (!response.ok) {
+                    throw new Error(`Server error: ${response.status} ${response.statusText}`);
+                }
+
+                // Remove the task from the UI
+                taskElement.remove();
+            } catch (error) {
+                console.error("Error deleting task:", error);
             }
+        }
 
-        function submitChecklist() {
-        const tasks = [];
-        const taskItems = document.querySelectorAll('.checklist-item');
+        // Function to update task completion status
+        async function updateTaskStatus(taskId, completed) {
+            try {
+                await fetch('http://localhost:3010/update-checklist-task', {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ taskId, completed }),
+                });
+            } catch (error) {
+                console.error("Error updating task status:", error);
+            }
+        }
 
-        // Loop through each checklist item and get the task description and completion status
-        taskItems.forEach(taskItem => {
-            const checkbox = taskItem.querySelector('input[type="checkbox"]');
-            const taskInput = taskItem.querySelector('input[type="text"]');
+        // Fetch and display saved checklist tasks from the server
+        async function fetchChecklist() {
+            try {
+                const response = await fetch('http://localhost:3010/get-checklist');
+                if (!response.ok) {
+                    throw new Error(`Server error: ${response.status} ${response.statusText}`);
+                }
 
-            // Get task description (use placeholder if text is empty)
-            const taskDescription = taskInput.value.trim() || taskInput.placeholder;
-            const completed = checkbox.checked;
+                const checklists = await response.json();
 
-            // Add task data to the array
-            tasks.push({ taskDescription, completed });
-        });
-
-        // Send the tasks data to the server
-        fetch('http://localhost:3010/submit-checklist', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ tasks }),
-        })
-        .then(response => response.json())
-        .then(data => {
-            alert(data.message);
-        })
-        .catch(error => {
-            console.error("Error submitting checklist:", error);
-            alert("Failed to submit the checklist. Please check the console for more details.");
-        });
-    }
-        
+                checklists.forEach(checklist => {
+                    checklist.tasks.forEach(task => {
+                        addNewItem(task._id, task.taskDescription, task.completed);
+                    });
+                });
+            } catch (error) {
+                console.error("Error fetching checklist:", error);
+            }
+        }
     </script>
 
 </body>

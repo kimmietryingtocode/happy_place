@@ -136,6 +136,86 @@ app.post('/submit-checklist', async (req, res) => {
     }
 });
 
+app.post('/add-checklist-task', async (req, res) => {
+    const { taskDescription, completed } = req.body;
+
+    try {
+        const newTask = { taskDescription, completed };
+        const checklistEntry = new ChecklistEntry({ tasks: [newTask] });
+        await checklistEntry.save();
+
+        res.json({ message: "Task added successfully!", taskId: checklistEntry.tasks[0]._id });
+    } catch (error) {
+        console.error("Error adding task:", error);
+        res.status(500).json({ message: "Failed to add task." });
+    }
+});
+
+
+
+// Route to get all journal entries
+app.get('/get-journal-entries', async (req, res) => {
+    try {
+        const entries = await JournalEntry.find().sort({ createdAt: -1 }); // Sort by latest entries
+        res.json(entries);
+    } catch (error) {
+        console.error("Error fetching journal entries:", error);
+        res.status(500).json({ message: "Failed to fetch journal entries." });
+    }
+});
+
+// Route to get all drawings
+app.get('/get-drawings', async (req, res) => {
+    try {
+        const drawings = await DrawingEntry.find().sort({ createdAt: -1 });
+        res.json(drawings);
+    } catch (error) {
+        console.error("Error fetching drawings:", error);
+        res.status(500).json({ message: "Failed to fetch drawings." });
+    }
+});
+
+// Route to get all checklist tasks
+app.get('/get-checklist', async (req, res) => {
+    try {
+        const checklist = await ChecklistEntry.find().sort({ createdAt: -1 });
+        res.json(checklist);
+    } catch (error) {
+        console.error("Error fetching checklist:", error);
+        res.status(500).json({ message: "Failed to fetch checklist." });
+    }
+});
+
+app.delete('/delete-checklist-task/:taskId', async (req, res) => {
+    const { taskId } = req.params;
+
+    try {
+        await ChecklistEntry.updateOne({}, { $pull: { tasks: { _id: taskId } } });
+
+        res.json({ message: "Task deleted successfully!" });
+    } catch (error) {
+        console.error("Error deleting task:", error);
+        res.status(500).json({ message: "Failed to delete task." });
+    }
+});
+
+app.put('/update-checklist-task', async (req, res) => {
+    const { taskId, completed } = req.body;
+
+    try {
+        await ChecklistEntry.updateOne(
+            { "tasks._id": taskId },
+            { $set: { "tasks.$.completed": completed } }
+        );
+
+        res.json({ message: "Task status updated successfully!" });
+    } catch (error) {
+        console.error("Error updating task status:", error);
+        res.status(500).json({ message: "Failed to update task status." });
+    }
+});
+
+
 // Start the server
 app.listen(port, () => {
     console.log(`Server is running on port ${port}`);

@@ -1,9 +1,31 @@
-const entryForm = document.querySelector('#entryForm');
-const entryResultsSection = document.querySelector('#entryResultsSection');
-const entryResultRow = document.querySelector('.entryResultRow');
-const getEntryTitle = document.querySelector('.entry-text-title'); // Changed to querySelector for a single element
-const getEntryText = document.querySelector('.entry-text-box'); // Changed to querySelector for a single element
+document.addEventListener("DOMContentLoaded", async function () {
+    await fetchJournalEntries(); // Fetch stored entries when the page loads
+});
 
+// Select necessary elements
+const entryForm = document.querySelector('#entryForm');
+const entryResultRow = document.querySelector('.entryResultRow');
+const getEntryTitle = document.querySelector('.entry-text-title');
+const getEntryText = document.querySelector('.entry-text-box');
+
+// Fetch and display all journal entries from the server
+async function fetchJournalEntries() {
+    try {
+        const response = await fetch('http://localhost:3010/get-journal-entries');
+        if (!response.ok) {
+            throw new Error(`Server error: ${response.status} ${response.statusText}`);
+        }
+
+        const entries = await response.json();
+        entries.forEach(entry => {
+            displayEntry(entry.entryTitle, entry.dailyEntry, entry.createdAt);
+        });
+    } catch (error) {
+        console.error("Error fetching journal entries:", error);
+    }
+}
+
+// Function to add a new journal entry
 async function addEntryToDom(event) {
     event.preventDefault();
 
@@ -15,9 +37,8 @@ async function addEntryToDom(event) {
         return;
     }
 
-    // Send the data to the server
     try {
-        const response = await fetch('http://localhost:3010/post', { // Adjusted to use full URL for clarity
+        const response = await fetch('http://localhost:3010/post', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -31,7 +52,9 @@ async function addEntryToDom(event) {
 
         const result = await response.json();
         console.log(result.message);
-        displayEntry(entryTitle, dailyEntry);
+
+        // Display the newly added entry
+        displayEntry(entryTitle, dailyEntry, new Date().toISOString());
     } catch (error) {
         console.error("Failed to submit entry:", error);
         alert("Failed to submit the journal entry. Please check the console for more details.");
@@ -42,23 +65,8 @@ async function addEntryToDom(event) {
     getEntryText.value = '';
 }
 
-// Function to display entry on the page
-function displayEntry(title, text) {
-    const d = new Date();
-    const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
-    const month = monthNames[d.getMonth()];
-    const day = d.getDate();
-    const year = d.getFullYear();
-
-    // Add heading only once
-    if (!document.querySelector('.heading-results')) {
-        const heading = document.createElement('h2');
-        heading.className = 'heading-results';
-        heading.textContent = 'Journal Entries';
-        entryResultRow.insertAdjacentElement('beforebegin', heading);
-    }
-
-    // Create entry container
+// Function to display a journal entry on the page
+function displayEntry(title, text, createdAt) {
     const entryDiv = document.createElement('div');
     entryDiv.className = 'single-entry-div';
 
@@ -68,17 +76,17 @@ function displayEntry(title, text) {
 
     const entryDate = document.createElement('p');
     entryDate.className = 'single-entry-date';
-    entryDate.textContent = `Date Added: ${day} ${month} ${year}`;
+    entryDate.textContent = `Date Added: ${new Date(createdAt).toLocaleDateString()}`;
 
     const entryParagraph = document.createElement('p');
     entryParagraph.className = 'single-entry-text';
     entryParagraph.textContent = text;
 
-    // Append elements to entryDiv and then to entryResultRow
     entryDiv.appendChild(entryHeading);
     entryDiv.appendChild(entryDate);
     entryDiv.appendChild(entryParagraph);
     entryResultRow.appendChild(entryDiv);
 }
 
+// Attach event listener for form submission
 entryForm.addEventListener('submit', addEntryToDom);
