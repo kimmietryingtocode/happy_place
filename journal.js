@@ -51,8 +51,8 @@ async function addEntryToDom(event) {
         }
 
         const result = await response.json();
-        console.log(result.message);
-        displayEntry(entryTitle, dailyEntry);
+        console.log("Entry saved:", result.message);
+        displayEntry(entryTitle, dailyEntry, new Date().toISOString()); // Display new entry
     } catch (error) {
         console.error("Failed to submit entry:", error);
         alert("Failed to submit the journal entry. Please check the console for more details.");
@@ -101,5 +101,43 @@ function displayEntry(title, text) {
     entryResultRow.appendChild(entryDiv);
 }
 
+// Fetch and display journal entries from the database
+async function fetchJournalEntries() {
+    try {
+        const response = await fetch('http://localhost:3010/get-journal-entries');
+        if (!response.ok) {
+            throw new Error(`Server error: ${response.status} ${response.statusText}`);
+        }
+
+        const entries = await response.json();
+        entries.forEach(entry => {
+            displayEntry(entry.entryTitle, entry.dailyEntry, entry.createdAt);
+        });
+    } catch (error) {
+        console.error("Error fetching journal entries:", error);
+    }
+}
+
+// Function to delete a journal entry
+async function deleteJournalEntry(entryDiv, title, createdAt) {
+    try {
+        const response = await fetch('http://localhost:3010/delete-journal-entry', {
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ entryTitle: title, createdAt }),
+        });
+
+        if (!response.ok) {
+            throw new Error(`Server error: ${response.status} ${response.statusText}`);
+        }
+
+        console.log("Entry deleted successfully");
+        entryDiv.remove(); // Remove from UI
+    } catch (error) {
+        console.error("Failed to delete entry:", error);
+    }
+}
 // Attach event listener for form submission
 entryForm.addEventListener('submit', addEntryToDom);
