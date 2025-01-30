@@ -55,10 +55,14 @@ button {
   font-size: 1.2rem;
   padding: 0.5em 1em;
   border: none;
-  background-color: aquamarine;
+  background-color: #f7f2eb;
   color: #0a2472;
   font-family: "Comfortaa", sans-serif;
 }
+
+
+
+
 
 /* Section Container Positions, Spacing, Utilities */
 
@@ -111,6 +115,12 @@ header {
 .btn-dark {
   color: white;
   background-color: #0a2472;
+}
+
+.format-btn.active {
+  background-color: rgba(9,31,91,1);
+  color: #f7f2eb;
+  font-weight: 700;
 }
 
 button[class^='btn-']:hover,
@@ -218,6 +228,34 @@ input[class^='btn-']:hover {
   margin: 0;
 }
 
+/* Journal Toolbar */
+
+.editor-toolbar {
+  display: inline-flex;
+  justify-content: center;
+  gap: 0.5rem;
+  margin-bottom: 1em;
+  
+}
+
+.editor-toolbar button {
+  padding: 0.5em;
+  font-size: 1.2rem;
+  border: 1px solid rgba(9,31,91,1);
+  border-radius: 4px;
+  background-color: #f7f2eb;
+  color: rgba(9,31,91,1);
+  cursor: pointer;
+  font-family: "Comfortaa", sans-serif;
+  transition: background-color 0.2s, color 0.2s;
+  
+}
+
+.editor-toolbar button:hover {
+  background-color: rgba(9,31,91,1);
+  color: #f7f2eb;
+} 
+
 /* Journal Results Section */
 
 .sectionEntryResults {
@@ -226,10 +264,6 @@ input[class^='btn-']:hover {
 }
 
 .entryResultRow {
-  /* display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  width: 100%;
-  margin: 1em auto; */
   display: flex;
   justify-content: center;
   align-items: center;
@@ -238,7 +272,6 @@ input[class^='btn-']:hover {
 
 .single-entry-div {
   max-width: 100%;
-
   margin: 1em auto;
   padding: 1em 1em;
 }
@@ -255,27 +288,27 @@ input[class^='btn-']:hover {
 }
 
 .montserrat-alternates-light {
-    font-family: "Montserrat Alternates", serif;
-    font-weight: 300;
-    font-style: normal;
-  }
+  font-family: "Montserrat Alternates", serif;
+  font-weight: 300;
+  font-style: normal;
+}
   
-  .montserrat-alternates-regular {
-    font-family: "Montserrat Alternates", serif;
-    font-weight: 400;
-    font-style: normal;
-  }
+.montserrat-alternates-regular {
+  font-family: "Montserrat Alternates", serif;
+  font-weight: 400;
+  font-style: normal;
+}
   
-  .montserrat-alternates-medium {
-    font-family: "Montserrat Alternates", serif;
-    font-weight: 500;
-    font-style: normal;
-  }
+.montserrat-alternates-medium {
+  font-family: "Montserrat Alternates", serif;
+  font-weight: 500;
+  font-style: normal;
+}
  
-  .comfortaa {
-    font-family: "Comfortaa", sans-serif;
-    font-optical-sizing: auto;
-    font-weight: 300;
-    font-style: normal;
-  }
-  
+.comfortaa {
+  font-family: "Comfortaa", sans-serif;
+  font-optical-sizing: auto;
+  font-weight: 300;
+  font-style: normal;
+}
+

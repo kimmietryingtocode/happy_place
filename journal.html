@@ -23,8 +23,15 @@
                     <form id="entryForm" action="/post">
                         <label for="entry-title" class="journal-label">Entry Title</label>
                         <input type="text" name="entryTitle" id="entry-title" class="entry-text-title" placeholder="Name of entry ✏️" required />
+
+                        <div class="format-buttons">
+                            <button id="boldBtn" class="format-btn editor-toolbar button" type="button">B</button>
+                            <button id="italicBtn" class="format-btn editor-toolbar button" type="button"><em>I</em></button>
+                            <button id="underlineBtn" class="format-btn editor-toolbar button" type="button"><u>U</u></button>
+                        </div>
+
                         <label for="entry" class="journal-label">Today's Entry</label>
-                        <textarea name="dailyEntry" id="entry" class="entry-text-box" placeholder="What's on your mind today? 💭" required></textarea>
+                        <div id="entry" class="entry-text-box" contenteditable="true" placeholder="What's on your mind today? 💭"></div>
                         <button class="btn-main entry-submit-btn" type="submit">Submit</button>
                     </form>
                 </div>

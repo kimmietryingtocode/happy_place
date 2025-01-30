@@ -1,0 +1,49 @@
+body {
+    font-family: "Montserrat Alternates", serif;
+    font-weight: 300;
+    background: rgba(237, 240, 245, 1);
+    color: rgba(9, 31, 91, 1);
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+.container {
+    text-align: center;
+    background-color: #ffffff;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+h1 {
+    margin-bottom: 20px;
+}
+
+.sound-controls {
+    display: flex;
+    justify-content: space-around;
+    gap: 10px;
+}
+
+.sound {
+    margin: 10px;
+}
+
+.play-btn {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    font-size: 16px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.play-btn:hover {
+    background-color: #0056b3;
+}

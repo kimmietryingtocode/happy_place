@@ -5,38 +5,38 @@ document.addEventListener("DOMContentLoaded", async function () {
 // Select necessary elements
 const entryForm = document.querySelector('#entryForm');
 const entryResultRow = document.querySelector('.entryResultRow');
-const getEntryTitle = document.querySelector('.entry-text-title');
-const getEntryText = document.querySelector('.entry-text-box');
+const getEntryTitle = document.querySelector('.entry-text-title'); // Single title input
+const getEntryText = document.querySelector('.entry-text-box'); // Contenteditable div
+const boldBtn = document.querySelector('#boldBtn');
+const italicBtn = document.querySelector('#italicBtn');
+const underlineBtn = document.querySelector('#underlineBtn');
 
-// Fetch and display all journal entries from the server
-async function fetchJournalEntries() {
-    try {
-        const response = await fetch('http://localhost:3010/get-journal-entries');
-        if (!response.ok) {
-            throw new Error(`Server error: ${response.status} ${response.statusText}`);
-        }
-
-        const entries = await response.json();
-        entries.forEach(entry => {
-            displayEntry(entry.entryTitle, entry.dailyEntry, entry.createdAt);
-        });
-    } catch (error) {
-        console.error("Error fetching journal entries:", error);
-    }
+// Function to apply formatting
+function formatText(button, command) {
+    document.execCommand(command, false, null); // Apply the formatting command
+    button.classList.toggle('active'); // Toggle the "active" class
 }
 
-// Function to add a new journal entry
+// Attach event listeners to formatting buttons
+boldBtn.addEventListener('click', () => formatText(boldBtn,'bold'));
+italicBtn.addEventListener('click', () => formatText(italicBtn,'italic'));
+underlineBtn.addEventListener('click', () => formatText(underlineBtn,'underline'));
+
+
+
+// Add entry to DOM
 async function addEntryToDom(event) {
     event.preventDefault();
 
     const entryTitle = getEntryTitle.value.trim();
-    const dailyEntry = getEntryText.value.trim();
+    const dailyEntry = getEntryText.innerHTML.trim(); // Use innerHTML to preserve formatting
 
     if (!entryTitle || !dailyEntry) {
         alert("Please fill out both the title and the entry.");
         return;
     }
 
+    // Send the data to the server
     try {
         const response = await fetch('http://localhost:3010/post', {
             method: 'POST',
@@ -52,9 +52,7 @@ async function addEntryToDom(event) {
 
         const result = await response.json();
         console.log(result.message);
-
-        // Display the newly added entry
-        displayEntry(entryTitle, dailyEntry, new Date().toISOString());
+        displayEntry(entryTitle, dailyEntry);
     } catch (error) {
         console.error("Failed to submit entry:", error);
         alert("Failed to submit the journal entry. Please check the console for more details.");
@@ -62,11 +60,26 @@ async function addEntryToDom(event) {
 
     // Clear input fields after submission
     getEntryTitle.value = '';
-    getEntryText.value = '';
+    getEntryText.innerHTML = ''; // Clear the rich text editor
 }
 
-// Function to display a journal entry on the page
-function displayEntry(title, text, createdAt) {
+// Function to display entry on the page
+function displayEntry(title, text) {
+    const d = new Date();
+    const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+    const month = monthNames[d.getMonth()];
+    const day = d.getDate();
+    const year = d.getFullYear();
+
+    // Add heading only once
+    if (!document.querySelector('.heading-results')) {
+        const heading = document.createElement('h2');
+        heading.className = 'heading-results';
+        heading.textContent = 'Journal Entries';
+        entryResultRow.insertAdjacentElement('beforebegin', heading);
+    }
+
+    // Create entry container
     const entryDiv = document.createElement('div');
     entryDiv.className = 'single-entry-div';
 
@@ -80,7 +93,7 @@ function displayEntry(title, text, createdAt) {
 
     const entryParagraph = document.createElement('p');
     entryParagraph.className = 'single-entry-text';
-    entryParagraph.textContent = text;
+    entryParagraph.innerHTML = text; // Use innerHTML to preserve formatting
 
     entryDiv.appendChild(entryHeading);
     entryDiv.appendChild(entryDate);
