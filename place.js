@@ -18,6 +18,10 @@ document.addEventListener("DOMContentLoaded", () => {
             { 
                 iconFile: "images/swatchbook-solid.svg",
                 component: createMoodChecker
+            },
+            { 
+                iconFile: "images/music-solid.svg",
+                component: createAmbientSound
             }
         ];
     
@@ -375,87 +379,131 @@ document.addEventListener("DOMContentLoaded", () => {
         document.body.appendChild(checklist);
     
         // Function to add a new task
-        function addNewItem() {
-            const taskDescription = document.getElementById('taskInput').value;
-            if (taskDescription.trim() !== '') {
+        document.addEventListener("DOMContentLoaded", async function () {
+            await fetchChecklist(); // Fetch stored checklist tasks when the page loads
+        });
+
+        const btn = document.getElementById('addBtn');
+        const checklistContainer = document.getElementById('checklistContainer');
+        let taskIdCounter = 0; // Counter for unique task IDs
+
+        // Function to add a new task
+        function addNewItem(taskId = null, taskDescription = "", completed = false) {
+            if (!taskDescription && taskId === null) {
+                taskDescription = document.getElementById('taskInput').value.trim();
+                if (taskDescription === '') return;
                 document.getElementById('taskInput').value = ''; // Clear input field
-    
-                // Create a new checklist item container
-                const newItem = document.createElement('div');
-                newItem.className = 'checklist-item';
-    
-                // Create the checkbox
-                const checkbox = document.createElement('input');
-                checkbox.type = 'checkbox';
-    
-                // Create the text input for the task
-                const taskInput = document.createElement('input');
-                taskInput.type = 'text';
-                taskInput.value = taskDescription;
-                taskInput.placeholder = 'New Task';
-    
-                // Create the delete button
-                const deleteButton = document.createElement('button');
-                deleteButton.className = 'delete-button';
-                deleteButton.innerHTML = '<img src="images/xmark-solid.svg" alt="Delete">';
-                deleteButton.onclick = () => deleteTask(deleteButton);
-    
-                // Append elements to the new checklist item
-                newItem.appendChild(checkbox);
-                newItem.appendChild(taskInput);
-                newItem.appendChild(deleteButton);
-    
-                // Append the new item to the checklist container
-                document.getElementById('checklistContainer').appendChild(newItem);
+            }
+
+            // Create a new checklist item container
+            const newItem = document.createElement('div');
+            newItem.className = 'checklist-item';
+            newItem.dataset.taskId = taskId; // Store task ID for deletion
+
+            // Create the checkbox
+            const checkbox = document.createElement('input');
+            checkbox.type = 'checkbox';
+            checkbox.checked = completed;
+            checkbox.addEventListener('change', () => updateTaskStatus(taskId, checkbox.checked)); // Update task completion status
+
+            // Create the text input for the task
+            const taskInput = document.createElement('input');
+            taskInput.type = 'text';
+            taskInput.value = taskDescription;
+            taskInput.placeholder = 'New Task';
+
+            // Create the delete button
+            const deleteButton = document.createElement('button');
+            deleteButton.className = 'delete-button';
+            deleteButton.innerHTML = '<img src="images/xmark-solid.svg">';
+            deleteButton.onclick = () => deleteTask(newItem, taskId);
+
+            // Append elements to the new checklist item
+            newItem.appendChild(checkbox);
+            newItem.appendChild(taskInput);
+            newItem.appendChild(deleteButton);
+
+            // Append the new item to the checklist container
+            checklistContainer.appendChild(newItem);
+        }
+
+        // Attach event listener to the Add button
+        btn.addEventListener('click', async () => {
+            const taskDescription = document.getElementById('taskInput').value.trim();
+            if (taskDescription === '') return;
+
+            try {
+                const response = await fetch('http://localhost:3010/add-checklist-task', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ taskDescription, completed: false }),
+                });
+
+                if (!response.ok) {
+                    throw new Error(`Server error: ${response.status} ${response.statusText}`);
+                }
+
+                const result = await response.json();
+                addNewItem(result.taskId, taskDescription, false);
+            } catch (error) {
+                console.error("Error adding task:", error);
+            }
+        });
+
+        // Function to delete a task
+        async function deleteTask(taskElement, taskId) {
+            try {
+                const response = await fetch(`http://localhost:3010/delete-checklist-task/${taskId}`, {
+                    method: 'DELETE',
+                });
+
+                if (!response.ok) {
+                    throw new Error(`Server error: ${response.status} ${response.statusText}`);
+                }
+
+                // Remove the task from the UI
+                taskElement.remove();
+            } catch (error) {
+                console.error("Error deleting task:", error);
             }
         }
-    
-        // Event listener for adding tasks
-        document.getElementById('addBtn').addEventListener('click', addNewItem);
-    
-        // Function to delete a task
-        function deleteTask(button) {
-            const taskItem = button.parentElement;
-            taskItem.remove();
+
+        // Function to update task completion status
+        async function updateTaskStatus(taskId, completed) {
+            try {
+                await fetch('http://localhost:3010/update-checklist-task', {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ taskId, completed }),
+                });
+            } catch (error) {
+                console.error("Error updating task status:", error);
+            }
         }
-    
-        // Function to submit the checklist
-        function submitChecklist() {
-            const tasks = [];
-            const taskItems = document.querySelectorAll('.checklist-item');
-    
-            // Loop through each checklist item and get the task description and completion status
-            taskItems.forEach(taskItem => {
-                const checkbox = taskItem.querySelector('input[type="checkbox"]');
-                const taskInput = taskItem.querySelector('input[type="text"]');
-    
-                // Get task description (use placeholder if text is empty)
-                const taskDescription = taskInput.value.trim() || taskInput.placeholder;
-                const completed = checkbox.checked;
-    
-                // Add task data to the array
-                tasks.push({ taskDescription, completed });
-            });
-    
-            // Send the tasks data to the server
-            fetch('http://localhost:3010/submit-checklist', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({ tasks }),
-            })
-            .then(response => response.json())
-            .then(data => {
-                alert(data.message);
-            })
-            .catch(error => {
-                console.error("Error submitting checklist:", error);
-                alert("Failed to submit the checklist. Please check the console for more details.");
-            });
+
+        // Fetch and display saved checklist tasks from the server
+        async function fetchChecklist() {
+            try {
+                const response = await fetch('http://localhost:3010/get-checklist');
+                if (!response.ok) {
+                    throw new Error(`Server error: ${response.status} ${response.statusText}`);
+                }
+
+                const checklists = await response.json();
+
+                checklists.forEach(checklist => {
+                    checklist.tasks.forEach(task => {
+                        addNewItem(task._id, task.taskDescription, task.completed);
+                    });
+                });
+            } catch (error) {
+                console.error("Error fetching checklist:", error);
+            }
         }
-    
-        document.getElementById('submitBtn').addEventListener('click', submitChecklist);
     
         // Call drag and resize functions if needed (assuming they exist)
         dragElement(checklist);
@@ -509,12 +557,116 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     }
 
+    function createAmbientSound() {
+        // Ensure CSS is loaded
+        const link = document.createElement('link');
+        link.rel = 'stylesheet';
+        link.href = 'audioWin.css'; // Make sure this file exists in the correct location
+        link.type = 'text/css';
+        document.head.appendChild(link);
+    
+        // Create the audio widget container
+        const audio = document.createElement("div");
+        audio.classList.add("audio");
+    
+        // Header with close button
+        const header = document.createElement("div");
+        header.classList.add("header");
+    
+        const closeButton = document.createElement("span");
+        closeButton.classList.add("close-button");
+        closeButton.innerHTML = "&times;";
+        closeButton.onclick = () => document.body.removeChild(audio);
+    
+        header.appendChild(closeButton);
+    
+        // Content with sound buttons
+        const content = document.createElement("div");
+        content.innerHTML = `
+            <div class="container">
+                <h1>Ambient Sounds</h1>
+                <div class="sound-controls">
+                    <div class="sound">
+                        <button class="play-btn" data-sound="rain">Rain</button>
+                    </div>
+                    <div class="sound">
+                        <button class="play-btn" data-sound="forest">Forest</button>
+                    </div>
+                    <div class="sound">
+                        <button class="play-btn" data-sound="ocean">Ocean</button>
+                    </div>
+                </div>
+            </div>
+        `;
+    
+        // Append everything to the widget
+        audio.appendChild(header);
+        audio.appendChild(content);
+    
+        // Create resize handle
+        const resizeHandle = document.createElement("div");
+        resizeHandle.classList.add("resize-handle");
+        audio.appendChild(resizeHandle);
+    
+        // Append the widget to the body
+        document.body.appendChild(audio); 
+    
+        // Make the widget draggable and resizable
+        dragElement(audio);
+        makeResizable(audio, resizeHandle);
+    
+        // Store sound elements
+        const sounds = {
+            rain: new Audio('rain.mp3'),
+            forest: new Audio('forest.mp3'),
+            ocean: new Audio('ocean.mp3')
+        };
+    
+        // Add event listeners to buttons AFTER appending the content
+        document.querySelectorAll('.play-btn').forEach(button => {
+            button.addEventListener('click', () => {
+                const soundKey = button.getAttribute('data-sound');
+                toggleSound(soundKey, button);
+            });
+        });
+    
+        // Function to toggle play/pause
+        function toggleSound(soundKey, button) {
+            const sound = sounds[soundKey];
+    
+            if (sound.paused) {
+                // Stop other sounds
+                Object.keys(sounds).forEach(key => {
+                    if (key !== soundKey) {
+                        sounds[key].pause();
+                        sounds[key].currentTime = 0;
+                        const otherButton = document.querySelector(`.play-btn[data-sound="${key}"]`);
+                        if (otherButton) {
+                            otherButton.textContent = key.charAt(0).toUpperCase() + key.slice(1);
+                        }
+                    }
+                });
+    
+                // Play selected sound
+                sound.loop = true;
+                sound.play();
+                button.textContent = `Stop ${soundKey.charAt(0).toUpperCase() + soundKey.slice(1)}`;
+            } else {
+                // Pause selected sound
+                sound.pause();
+                sound.currentTime = 0;
+                button.textContent = soundKey.charAt(0).toUpperCase() + soundKey.slice(1);
+            }
+        }
+    }
+    
+    
     function makeResizable(element, handle) {
         let startX = 0, startY = 0, startWidth = 0, startHeight = 0;
-
-        handle.onmousedown = function(e) {
+    
+        handle.onmousedown = function (e) {
             e.preventDefault();
-            e.stopPropagation(); // Prevent triggering drag events
+            e.stopPropagation();
             startX = e.clientX;
             startY = e.clientY;
             startWidth = parseInt(document.defaultView.getComputedStyle(element).width, 10);
@@ -522,19 +674,46 @@ document.addEventListener("DOMContentLoaded", () => {
             document.addEventListener('mousemove', resizeElement);
             document.addEventListener('mouseup', stopResizeElement);
         };
-
+    
         function resizeElement(e) {
             const newWidth = startWidth + e.clientX - startX;
             const newHeight = startHeight + e.clientY - startY;
             element.style.width = (newWidth > 150 ? newWidth : 150) + "px";
             element.style.height = (newHeight > 150 ? newHeight : 150) + "px";
         }
-
+    
         function stopResizeElement() {
             document.removeEventListener('mousemove', resizeElement);
             document.removeEventListener('mouseup', stopResizeElement);
         }
     }
-
+    
+    
+    function dragElement(element) {
+        let posX = 0, posY = 0, startX = 0, startY = 0;
+    
+        element.onmousedown = function (e) {
+            e.preventDefault();
+            startX = e.clientX;
+            startY = e.clientY;
+            document.addEventListener("mousemove", drag);
+            document.addEventListener("mouseup", stopDrag);
+        };
+    
+        function drag(e) {
+            posX = startX - e.clientX;
+            posY = startY - e.clientY;
+            startX = e.clientX;
+            startY = e.clientY;
+            element.style.top = (element.offsetTop - posY) + "px";
+            element.style.left = (element.offsetLeft - posX) + "px";
+        }
+    
+        function stopDrag() {
+            document.removeEventListener("mousemove", drag);
+            document.removeEventListener("mouseup", stopDrag);
+        }
+    }
+    
     createToolbar();
 });
