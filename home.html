@@ -9,7 +9,6 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat+Alternates:wght@300;400;700&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
-    
 </head>
 <body data-scroll-container>
 
@@ -17,49 +16,52 @@
         <div class="ellipse ellipse1"></div>
         <div class="ellipse ellipse2"></div>
         <div class="ellipse ellipse3"></div>
-        
-        <!-- Text Elements as Overlays -->
-
+    </div>
+    
     <!-- Header Section -->
+    <header>
+        <nav>
+            <ul>
+                <li class="logo"><a href="#home"><img src="images/happy_place.svg" alt="Happy Place Logo"/></a></li>
+                <li><a href="#home">Home</a></li>
+                <li class="v2_9"><a href="#about">About</a></li>
+                <li class="v2_9"><a href="#services">Services</a></li>
+                <li class="v2_11"><a href="#testimonials">Testimonials</a></li>
+            </ul>
+            <div class="nav-buttons">
+                <button class="nav-button">Log In</button>
+                <button class="nav-button">Sign In</button>
+            </div>
+        </nav>
+    </header>
 
     <!-- Main Section -->
     <section class="welcome">
-        <header>
-            <nav>
-                <ul>
-                    <li class="logo"><a href="#home"><img src="images/happy_place.svg"/></a></li>
-                    <li><a href="#home">Home</a></li>
-                    <li class="v2_9"><a href="#about">About</a></li>
-                    <li class="v2_9"><a href="#services">Services</a></li>
-                    <li class="v2_11"><a href="#testimonials">Testimonials</a></li>
-                </ul>
-                <div class="nav-buttons">
-                    <button class="nav-button">Log In</button>
-                    <button class="nav-button">Sign In</button>
-                </div>
-            </nav>
-        </header>
         <div class="video-container">
             <video src="images/12566620_1920_1080_24fps.mp4" autoplay muted loop></video>
         </div>
         <h1>Welcome to Your Happy Place</h1>
         <button class="center-button" onclick="goToPlace()">Go To Your Happy Place</button>
     </section>
+    
     <div class="home-img">
-        <img src="images/meditate.svg">
+        <img src="images/meditate.svg" alt="Meditation Illustration">
     </div>
+
     <main>
         <!-- About Section -->
         <section id="about" class="main-section" data-scroll-section>
             <h2>About Us</h2>
-            <p>We are here to provide a sanctuary where you can recharge, reflect, and reconnect with what brings you joy.</p>
+            <p>Welcome to Your Happy Place, a sanctuary designed to help you unwind, recharge, and find balance in your life.  
+            Our mission is to create a space where you can disconnect from stress and reconnect with inner peace.  
+            Whether you're seeking mindfulness, relaxation, or simple moments of joy, we’re here to support your journey to well-being.</p>
         </section>
 
         <!-- Services Section -->
         <section id="services" class="main-section" data-scroll-section>
-            <h2 >Our Services</h2>
+            <h2>Our Services</h2>
             <div class="services">
-                <div class="service-item" >
+                <div class="service-item">
                     <h3>Meditation Sessions</h3>
                     <p>Join guided meditation sessions to center your mind and find inner peace.</p>
                 </div>
@@ -76,7 +78,7 @@
 
         <!-- Testimonials Section -->
         <section id="testimonials" class="main-section" data-scroll-section>
-            <h2 >What Our Visitors Say</h2>
+            <h2>What Our Visitors Say</h2>
             <div class="testimonials">
                 <div class="testimonial-item">
                     <p>"This place has been a lifesaver for my mental well-being. The meditation sessions are fantastic!" - Sarah</p>
@@ -92,6 +94,8 @@
     <footer data-scroll-section>
         <p>&copy; 2024 Your Happy Place. All rights reserved.</p>
     </footer>
+
+    <!-- Scripts -->
     <script src="https://cdn.jsdelivr.net/npm/swiper@9/swiper-bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/locomotive-scroll@3.5.4/dist/locomotive-scroll.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.9.1/gsap.min.js"></script>
