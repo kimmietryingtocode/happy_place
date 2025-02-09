@@ -29,42 +29,170 @@
         }
         .emoji-button {
             font-size: 2rem;
-            background-color: #d9effa;
             border: none;
             border-radius: 50%;
             width: 60px;
             height: 60px;
             margin: 10px;
             cursor: pointer;
-            transition: background-color 0.3s ease;
+            transition: transform 0.2s ease;
         }
         .emoji-button:hover {
-            background-color: #c2e3f5;
+            transform: scale(1.1);
+        }
+        .log-container {
+            margin-top: 20px;
+            padding: 10px;
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        .log {
+            font-size: 1rem;
+            padding: 5px;
+            display: flex;
+            justify-content: space-between;
+        }
+        .delete-btn {
+            background-color: red;
+            color: white;
+            border: none;
+            padding: 3px 6px;
+            cursor: pointer;
+        }
+        .add-mood {
+            margin-top: 15px;
+        }
+        input, button {
+            padding: 5px;
+            font-size: 1rem;
         }
     </style>
 </head>
 <body>
     <h1>Mood Tracker</h1>
-    <div class="container">
-        <button class="emoji-button" data-mood="Happy">🙂</button>
-        <button class="emoji-button" data-mood="Sad">🙁</button>
-        <button class="emoji-button" data-mood="Angry">😠</button>
-        <button class="emoji-button" data-mood="Anxious">😟</button>
-        <button class="emoji-button" data-mood="Calm">😌</button>
-        <button class="emoji-button" data-mood="Tired">😴</button>
+
+    <label for="date-picker">Select Date:</label>
+    <input type="date" id="date-picker" value="">
+    
+    <div class="container" id="mood-container"></div>
+
+    <div class="add-mood">
+        <input type="text" id="new-mood-name" placeholder="Enter mood (e.g. Excited)">
+        <input type="text" id="new-mood-emoji" placeholder="Enter emoji (e.g. 😊)">
+        <button onclick="addNewMood()">Add Mood</button>
     </div>
+
+    <div class="log-container">
+        <h3>Mood Log for Selected Date</h3>
+        <div id="mood-log"></div>
+    </div>
+
     <script>
-        const buttons = document.querySelectorAll('.emoji-button');
-        
-        buttons.forEach(button => {
-            button.addEventListener('click', () => {
-                const mood = button.getAttribute('data-mood');
-                alert(`Mood saved!\n\nYou are feeling: ${mood}`);
+        const moodContainer = document.getElementById('mood-container');
+        const moodLog = document.getElementById('mood-log');
+        const datePicker = document.getElementById('date-picker');
+
+        const API_BASE = "http://localhost:3010"; // Base URL for backend
+
+        let moods = {
+            "Happy": "🙂",
+            "Sad": "🙁",
+            "Angry": "😠",
+            "Anxious": "😟",
+            "Calm": "😌",
+            "Tired": "😴"
+        };
+
+        // Load stored moods from localStorage
+        function loadStoredMoods() {
+            const storedMoods = JSON.parse(localStorage.getItem('moods'));
+            if (storedMoods) moods = storedMoods;
+        }
+
+        function saveMoodsToStorage() {
+            localStorage.setItem('moods', JSON.stringify(moods));
+        }
+
+        function displayMoods() {
+            moodContainer.innerHTML = "";
+            Object.keys(moods).forEach(mood => {
+                const button = document.createElement('button');
+                button.classList.add('emoji-button');
+                button.innerHTML = moods[mood];
+                button.setAttribute('data-mood', mood);
+                button.addEventListener('click', () => logMood(mood, moods[mood]));
+                moodContainer.appendChild(button);
             });
-        });
+        }
+
+        async function logMood(mood, emoji) {
+            const date = datePicker.value;
+            if (!date) return alert("Please select a date!");
+
+            const response = await fetch(`${API_BASE}/log-mood`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ date, mood, emoji })
+            });
+
+            if (response.ok) loadMoodLog();
+            else console.error("Error logging mood:", await response.text());
+        }
+
+        async function loadMoodLog() {
+            const date = datePicker.value;
+            if (!date) return;
+
+            const response = await fetch(`${API_BASE}/get-moods/${date}`);
+            if (!response.ok) {
+                console.error("Error fetching moods:", await response.text());
+                return;
+            }
+
+            const moods = await response.json();
+            document.getElementById('mood-log').innerHTML = moods.map(entry =>
+                `<div class="log">
+                    <span>${entry.emoji} ${entry.mood} - ${entry.time}</span>
+                    <button class="delete-btn" onclick="deleteMood('${date}', '${entry.mood}', '${entry.emoji}', '${entry.time}')">X</button>
+                </div>`
+            ).join("");
+        }
+
+        async function deleteMood(date, mood, emoji, time) {
+            await fetch(`${API_BASE}/delete-mood`, {
+                method: 'DELETE',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ date, mood, emoji, time })
+            });
+
+            loadMoodLog();
+        }
+
+        function addNewMood() {
+            const moodName = document.getElementById('new-mood-name').value.trim();
+            const emoji = document.getElementById('new-mood-emoji').value.trim();
+
+            if (!moodName || !emoji) {
+                alert("Please enter both a mood name and an emoji!");
+                return;
+            }
+
+           
+
+            moods[moodName] = emoji;
+            saveMoodsToStorage();
+            displayMoods();
+
+            // Clear input fields
+            document.getElementById('new-mood-name').value = "";
+            document.getElementById('new-mood-emoji').value = "";
+        }
+
+        datePicker.addEventListener('change', loadMoodLog);
+
+        loadStoredMoods();
+        displayMoods();
     </script>
 </body>
 </html>
-
-
-

@@ -16,6 +16,8 @@ const drawingsConnection = mongoose.createConnection('mongodb+srv://kimmie:sally
 const journalConnection = mongoose.createConnection('mongodb+srv://kimmie:sallyDENI04@cluster.gtn1i.mongodb.net/Journal?retryWrites=true&w=majority&tls=true');
 
 const checklistConnection = mongoose.createConnection('mongodb+srv://kimmie:sallyDENI04@cluster.gtn1i.mongodb.net/Checklist?retryWrites=true&w=majority&tls=true');
+
+const moodConnection = mongoose.createConnection('mongodb+srv://kimmie:sallyDENI04@cluster.gtn1i.mongodb.net/MoodTracker?retryWrites=true&w=majority&tls=true');
 // Log connection status for both databases
 drawingsConnection.on('error', console.error.bind(console, 'MongoDB Drawings connection error:'));
 drawingsConnection.once('open', () => {
@@ -30,6 +32,11 @@ journalConnection.once('open', () => {
 checklistConnection.on('error', console.error.bind(console, 'MongoDB Journal connection error:'));
 checklistConnection.once('open', () => {
     console.log("Connected to the Checklist database");
+});
+
+moodConnection.on('error', console.error.bind(console, 'MongoDB MoodTracker connection error:'));
+moodConnection.once('open', () => {
+    console.log("Connected to the MoodTracker database");
 });
 
 // Define the schema and model for drawings
@@ -77,6 +84,17 @@ const checklistEntrySchema = new mongoose.Schema({
 });
 const ChecklistEntry = checklistConnection.model('ChecklistEntry', checklistEntrySchema, 'Tasks');
 
+
+const moodSchema = new mongoose.Schema({
+    date: { type: String, required: true }, // Stores moods per specific date (YYYY-MM-DD)
+    moods: [{
+        mood: String,
+        emoji: String,
+        time: { type: String, default: new Date().toLocaleTimeString() }
+    }]
+});
+
+const MoodEntry = moodConnection.model('MoodEntry', moodSchema, 'Moods');
 
 // Middleware to serve static files
 app.use(express.static(path.join(__dirname)));
@@ -151,19 +169,60 @@ app.post('/add-checklist-task', async (req, res) => {
     }
 });
 
-
-
-// Route to get all journal entries
-app.get('/get-journal-entries', async (req, res) => {
+app.post('/log-mood', async (req, res) => {
     try {
-        const entries = await JournalEntry.find().sort({ createdAt: -1 }); // Sort by latest entries
-        res.json(entries);
+        const { date, mood, emoji } = req.body;
+        const entry = await MoodEntry.findOneAndUpdate(
+            { date },
+            { $push: { moods: { mood, emoji, time: new Date().toLocaleTimeString() } } },
+            { upsert: true, new: true }
+        );
+        res.json({ message: "Mood logged successfully!", entry });
     } catch (error) {
-        console.error("Error fetching journal entries:", error);
-        res.status(500).json({ message: "Failed to fetch journal entries." });
+        res.status(500).json({ message: "Failed to log mood.", error });
     }
 });
 
+// Route to get all journal entries
+app.get('/get-moods/:date', async (req, res) => {
+    const { date } = req.params;
+
+    try {
+        const entry = await MoodEntry.findOne({ date });
+        res.json(entry ? entry.moods : []);
+    } catch (error) {
+        console.error("Error fetching moods:", error);
+        res.status(500).json({ message: "Failed to fetch moods." });
+    }
+});
+
+
+
+// Route to delete a mood entry by ID
+app.delete('/delete-mood', async (req, res) => {
+    const { date, mood, emoji, time } = req.body;
+
+    try {
+        const entry = await MoodEntry.findOne({ date });
+
+        if (entry) {
+            entry.moods = entry.moods.filter(m => !(m.mood === mood && m.emoji === emoji && m.time === time));
+
+            if (entry.moods.length === 0) {
+                await MoodEntry.deleteOne({ date }); // Delete the entry if no moods remain
+            } else {
+                await entry.save();
+            }
+
+            res.json({ message: "Mood deleted successfully!" });
+        } else {
+            res.status(404).json({ message: "Mood not found." });
+        }
+    } catch (error) {
+        console.error("Error deleting mood:", error);
+        res.status(500).json({ message: "Failed to delete mood." });
+    }
+});
 app.delete('/delete-journal-entry', async (req, res) => {
     const { entryTitle, createdAt } = req.body;
 
