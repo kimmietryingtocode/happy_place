@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Happy Place User Manual</title>
+    <link rel="stylesheet" href="userManual.css"> <!-- External CSS -->
+    <script defer src="userManual.js"></script> <!-- JavaScript for collapsible sections -->
+</head>
+<body>
+
+    <!-- Navigation Bar -->
+    <nav>
+        <li class="logo"><a href="home.html"><img src="images/happy_place.svg" alt="Happy Place Logo"/></a></li>
+        <ul>
+            <li><a href="#getting-started">Getting Started</a></li>
+            <li><a href="#features">Features</a></li>
+            <li><a href="#troubleshooting">Troubleshooting</a></li>
+            <li><a href="#contact">Contact</a></li>
+        </ul>
+    </nav>
+
+    <!-- Hero Section -->
+    <header>
+        <h1>Welcome to the Happy Place User Manual</h1>
+        <p>Your guide to making the most out of our platform.</p>
+    </header>
+
+    <!-- Table of Contents -->
+    <section id="table-of-contents">
+        <h2>📖 Table of Contents</h2>
+        <ul>
+            <li><a href="#getting-started">Getting Started</a></li>
+            <li><a href="#features">Features Overview</a></li>
+            <li><a href="#troubleshooting">Troubleshooting</a></li>
+            <li><a href="#contact">Contact & Support</a></li>
+        </ul>
+    </section>
+
+    <!-- Getting Started -->
+    <section id="getting-started">
+        <h2>🚀 Getting Started</h2>
+        <p>Learn how to access and navigate Happy Place.</p>
+        <div class="collapsible">
+            <button class="collapsible-btn">Expand</button>
+            <div class="collapsible-content">
+                <h3>System Requirements</h3>
+                <ul>
+                    <li>A device with internet access (desktop, laptop, tablet)</li>
+                    <li>A modern web browser (Chrome, Firefox, Edge, Safari)</li>
+                    <li>Optional: A registered account to save your progress</li>
+                </ul>
+
+                <h3>How to Access</h3>
+                <p>1. Open a web browser and go to <strong>[Website URL]</strong>.</p>
+                <p>2. If required, log in with your account credentials or create a new account.</p>
+                <p>3. After logging in, you'll be directed to the home page where you can access all features.</p>
+
+                <h3>Home Page Navigation</h3>
+                <ul>
+                    <li>The **menu** allows access to  our different tools (Whiteboard, Journal, Checklist, Mood Tracker.)</li>
+                    <li>The Go To Your Happy Place button takes you to the customizable workstation, where you can arrange tools according to your preference.</li>
+                </ul>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features -->
+    <section id="features">
+        <h2>✨ Features Overview</h2>
+
+        <div class="feature">
+            <h3>🎨 Whiteboard</h3>
+            <p>Sketch and save your drawings with ease.</p>
+            <ul>
+                <li>Click on “Whiteboard” from our home page's menu.</li>
+                <li>Hold down the mouse and move across the canvas to start drawing!</li>
+                <li>Use the slider on the brush resizer to resize your pen.</li>
+                <li>To the left of the brush resizer is a color picker where you can select your color or manually type in the RGB.</li>
+                <li>Hit the Clear button to clear your canvas completely.</li>
+                <li>Hit the Eraser button to open the eraser pen.</li>
+                <li>Hit the Drawing Mode button to go back to the drawing pen.</li>
+                <li>Hit the Save button to save your drawing!</li>
+            </ul>
+            <img src="whiteboard.png" alt="Whiteboard Feature">
+        </div>
+
+        <div class="feature">
+            <h3>📝 Journal</h3>
+            <p>Write and save journal entries.</p>
+            <ul>
+                <li>Click on “Journal” from our home page’s menu.</li>
+                <li>Enter the title of your entry under "Entry Title"</li>
+                <li>Type your entry in the “Today’s Entry” Box.</li>
+                <li>Use the B (Bold), I (Italicize), and U (Underline) buttons to customize your entries.</li>
+                <li>Hit the Submit button to save your Journal Entry!</li>
+            </ul>
+            <img src="journal.png" alt="Journal Feature">
+        </div>
+
+        <div class="feature">
+            <h3>📋 Self-Care Checklist</h3>
+            <ul>
+                <li>Click on "Checklist" from our main page's menu.</li>
+                <li>To add a new task, type it into the “Add a new task description” box, and hit the Add Task button.</li>
+                <li>Check off completed tasks by clicking the box to the left of said task.</li>
+                <li>Delete tasks by clicking the X to the left of said task.</li>
+                <li>Hit the Submit button to save your Checklist!</li>
+            </ul>
+            <img src="checklist.png" alt="Checklist Feature">
+        </div>
+
+        <div class="feature">
+            <h3>😊 Mood Tracker</h3>
+            <ul>
+                <li>Click on the date picker next to "Select Date:" and input the date you want to log a mood for.</li>
+                <li>Click on one of the emojis that best represents your mood.</li>
+                <li>To add a custom mood, enter a custom mood description in the "Enter mood" text box, then enter a corresponding emoji in the "Enter emoji" text box.</li>
+                <li>Click the "Add Mood" button to save your mood log for the selected date.</li>
+            </ul>
+            <img src="mood_tracker.png" alt="Mood Tracker Feature">
+        </div>
+
+        <div class="feature">
+            <h3>🌈 Color Changing Mood Tracker </h3>
+            <ul>
+                <li>Select a mood from the list that best represents how you're feeling.</li>
+                <li>Once a mood is selected, the background color of the page will automatically change.</li>
+                <li>Each mood has a unique color associated with it to provide a visual cue for your emotional state.</li>
+                <li>Click on different moods to see how the background color changes in response.</li>
+            </ul>
+            <img src="mood_tracker.png" alt="Mood Tracker Feature">
+        </div>
+
+        <div class="feature">
+            <h3>🎵 Ambient Sounds</h3>
+            <ul>
+                <li>Choose from our three calming sounds (Rain, Forest, and Ocean)</li>
+                <li>Listen to the calm ambient sounds as you navigate the rest of our features!</li>
+            </ul>
+            <img src="ambient_sounds.png" alt="Ambient Sounds Feature">
+        </div>
+
+        <div class="feature">
+            <h3>🖥️ Customizable Workstation</h3>
+            <ul>
+                <li>Add elements to your personal workstation.</li>
+                <li>Move, resize, or remove elements as needed.</li>
+                <li>Save your customized layout.</li>
+            </ul>
+            <img src="workstation.png" alt="Customizable Workstation Feature">
+        </div>
+    </section>
+
+    <!-- Troubleshooting -->
+    <section id="troubleshooting">
+        <h2>⚙️ Troubleshooting</h2>
+        <p>Common problems and solutions.</p>
+        <div class="collapsible">
+            <button class="collapsible-btn">Expand</button>
+            <div class="collapsible-content">
+                <p><strong>Problem:</strong> Cannot log in.</p>
+                <p><strong>Solution:</strong> Check your internet, reset password, or contact support.</p>
+                <p><strong>Problem:</strong> Features not loading properly.</p>
+                <p><strong>Solution:</strong> Refresh the page, check browser compatibility.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact -->
+    <section id="contact">
+        <h2>📩 Contact & Support</h2>
+        <p>If you need further assistance, contact <a href="mailto:support@yourwebsite.com">support@yourwebsite.com</a>.</p>
+    </section>
+
+</body>
+</html>
