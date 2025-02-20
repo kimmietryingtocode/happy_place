@@ -236,28 +236,23 @@ app.delete('/delete-mood', async (req, res) => {
     }
 });
 
+
 // Route to handle journal entry deletion
-app.delete('/delete-drawing/:drawingId', async (req, res) => {
-    try {
-        const { drawingId } = req.params;
-        if (!mongoose.Types.ObjectId.isValid(drawingId)) {
-            return res.status(400).json({ message: "Invalid drawing ID" });
-        }
+app.delete('/delete-journal-entry', (req, res) => {
+    const { entryId } = req.body;
 
-        const result = await DrawingEntry.findByIdAndDelete(drawingId);
-
-        if (!result) {
-            return res.status(404).json({ message: "Drawing not found" });
-        }
-
-        console.log(`Drawing with ID ${drawingId} deleted successfully.`);
-        res.status(200).json({ message: "Drawing deleted successfully", drawingId });
-
-    } catch (error) {
-        console.error("Error deleting drawing:", error);
-        res.status(500).json({ message: "Internal server error" });
-    }
+    // Use the correct model name: JournalEntry
+    JournalEntry.findByIdAndDelete(entryId)
+        .then(() => {
+            res.status(200).send({ message: 'Entry deleted successfully' });
+        })
+        .catch(err => {
+            res.status(500).send({ error: 'Failed to delete entry' });
+        });
 });
+
+
+
 
 
 // Route to get all drawings
@@ -296,23 +291,23 @@ app.delete('/delete-checklist-task/:taskId', async (req, res) => {
 });
 
 
+
 app.delete('/delete-drawing/:drawingId', async (req, res) => {
     try {
         const { drawingId } = req.params;
-        
         if (!mongoose.Types.ObjectId.isValid(drawingId)) {
             return res.status(400).json({ message: "Invalid drawing ID" });
         }
 
         const result = await DrawingEntry.findByIdAndDelete(drawingId);
 
-        if (result) {
-            console.log(`Drawing with ID ${drawingId} deleted successfully.`);
-            res.status(200).json({ message: "Drawing deleted successfully", drawingId });
-        } else {
-            console.log(`Drawing with ID ${drawingId} not found.`);
-            res.status(404).json({ message: "Drawing not found" });
+        if (!result) {
+            return res.status(404).json({ message: "Drawing not found" });
         }
+
+        console.log(`Drawing with ID ${drawingId} deleted successfully.`);
+        res.status(200).json({ message: "Drawing deleted successfully", drawingId });
+
     } catch (error) {
         console.error("Error deleting drawing:", error);
         res.status(500).json({ message: "Internal server error" });

@@ -114,50 +114,7 @@ function displayEntry(title, text, createdAt, entryId) {
     entryResultRow.appendChild(entryDiv);
 }
 
-// Function to delete a journal entry
-async function deleteJournalEntry(entryDiv, entryId) {
-    try {
-        const response = await fetch('http://localhost:3010/delete-journal-entry', {
-            method: 'DELETE',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ entryId }),
-        });
 
-        if (!response.ok) {
-            throw new Error(`Server error: ${response.status} ${response.statusText}`);
-        }
-
-        console.log("Entry deleted successfully");
-        entryDiv.remove(); // Remove from UI
-    } catch (error) {
-        console.error("Failed to delete entry:", error);
-    }
-}
-
-
-// Function to delete a journal entry
-async function deleteJournalEntry(entryDiv, entryId) {
-    try {
-        const response = await fetch('http://localhost:3010/delete-journal-entry', {
-            method: 'DELETE',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ entryId }),
-        });
-
-        if (!response.ok) {
-            throw new Error(`Server error: ${response.status} ${response.statusText}`);
-        }
-
-        console.log("Entry deleted successfully");
-        entryDiv.remove(); // Remove from UI
-    } catch (error) {
-        console.error("Failed to delete entry:", error);
-    }
-}
 
 // Fetch and display journal entries from the database
 async function fetchJournalEntries() {
@@ -178,14 +135,14 @@ async function fetchJournalEntries() {
 }
 
 // Function to delete a journal entry
-async function deleteJournalEntry(entryDiv, title, createdAt) {
+async function deleteJournalEntry(entryDiv, entryId) {
     try {
         const response = await fetch('http://localhost:3010/delete-journal-entry', {
             method: 'DELETE',
             headers: {
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify({ entryTitle: title, createdAt }),
+            body: JSON.stringify({ entryId }),
         });
 
         if (!response.ok) {
