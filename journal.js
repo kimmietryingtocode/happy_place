@@ -64,7 +64,8 @@ async function addEntryToDom(event) {
 }
 
 // Function to display entry on the page
-function displayEntry(title, text) {
+// Function to display entry on the page
+function displayEntry(title, text, createdAt, entryId) {
     const d = new Date();
     const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
     const month = monthNames[d.getMonth()];
@@ -95,10 +96,67 @@ function displayEntry(title, text) {
     entryParagraph.className = 'single-entry-text';
     entryParagraph.innerHTML = text; // Use innerHTML to preserve formatting
 
+    // Create the Delete button
+    const deleteBtn = document.createElement('button');
+    deleteBtn.className = 'delete-entry-btn';
+    deleteBtn.textContent = 'Delete';
+    
+    // Add event listener to the delete button
+    deleteBtn.addEventListener('click', async () => {
+        await deleteJournalEntry(entryDiv, entryId); // Call the delete function
+    });
+
+    // Append elements
     entryDiv.appendChild(entryHeading);
     entryDiv.appendChild(entryDate);
     entryDiv.appendChild(entryParagraph);
+    entryDiv.appendChild(deleteBtn); // Append delete button
     entryResultRow.appendChild(entryDiv);
+}
+
+// Function to delete a journal entry
+async function deleteJournalEntry(entryDiv, entryId) {
+    try {
+        const response = await fetch('http://localhost:3010/delete-journal-entry', {
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ entryId }),
+        });
+
+        if (!response.ok) {
+            throw new Error(`Server error: ${response.status} ${response.statusText}`);
+        }
+
+        console.log("Entry deleted successfully");
+        entryDiv.remove(); // Remove from UI
+    } catch (error) {
+        console.error("Failed to delete entry:", error);
+    }
+}
+
+
+// Function to delete a journal entry
+async function deleteJournalEntry(entryDiv, entryId) {
+    try {
+        const response = await fetch('http://localhost:3010/delete-journal-entry', {
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ entryId }),
+        });
+
+        if (!response.ok) {
+            throw new Error(`Server error: ${response.status} ${response.statusText}`);
+        }
+
+        console.log("Entry deleted successfully");
+        entryDiv.remove(); // Remove from UI
+    } catch (error) {
+        console.error("Failed to delete entry:", error);
+    }
 }
 
 // Fetch and display journal entries from the database
@@ -111,6 +169,7 @@ async function fetchJournalEntries() {
 
         const entries = await response.json();
         entries.forEach(entry => {
+            // Update here based on the correct field name (e.g., `createdAt` or `dateCreated`)
             displayEntry(entry.entryTitle, entry.dailyEntry, entry.createdAt);
         });
     } catch (error) {

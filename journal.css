@@ -312,3 +312,18 @@ input[class^='btn-']:hover {
   font-style: normal;
 }
 
+
+.delete-entry-btn {
+  background-color: rgba(9, 31, 91, 1); /* Set the background color */
+  color: white; /* Set text color to white */
+  border: none; /* Remove default border */
+  padding: 5px 10px; /* Add some padding */
+  font-size: 12px; /* Set font size */
+  cursor: pointer; /* Change the cursor to pointer on hover */
+  transition: background-color 0.3s; /* Add smooth transition for background color */
+}
+
+.delete-entry-btn:hover {
+  background-color: rgba(9, 31, 91, 0.8); /* Slightly darker background color on hover */
+}
+
