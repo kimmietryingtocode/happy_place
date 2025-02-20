@@ -123,18 +123,30 @@ app.post('/post', async (req, res) => {
     }
 });
 
+app.get('/get-journal-entries', async (req, res) => {
+    try {
+        const entries = await JournalEntry.find();  
+        res.json(entries);  // Send the journal entries as a JSON response
+    } catch (error) {
+        console.error("Error fetching journal entries:", error);
+        res.status(500).json({ message: "Failed to fetch journal entries." });
+    }
+});
+
 // Route to handle drawing submissions
 app.post('/save-drawing', async (req, res) => {
-    const { imageData } = req.body;
-
     try {
-        const drawingEntry = new DrawingEntry({ imageData });
-        await drawingEntry.save();
-        console.log("Drawing saved successfully:", drawingEntry);
-        res.json({ message: "Drawing saved successfully!" });
-    } catch (error) {
-        console.error("Error saving drawing:", error);
-        res.status(500).json({ message: "Failed to save drawing." });
+        const { imageData } = req.body;
+        const newDrawing = new DrawingEntry({ imageData });
+        const savedDrawing = await newDrawing.save();
+
+        res.status(200).json({
+            message: 'Drawing saved successfully',
+            drawingId: savedDrawing._id, // Ensure _id is returned correctly
+        });
+    } catch (err) {
+        console.error('Error saving drawing:', err);
+        res.status(500).json({ message: 'Error saving drawing', error: err.message });
     }
 });
 
@@ -223,22 +235,30 @@ app.delete('/delete-mood', async (req, res) => {
         res.status(500).json({ message: "Failed to delete mood." });
     }
 });
-app.delete('/delete-journal-entry', async (req, res) => {
-    const { entryTitle, createdAt } = req.body;
 
+// Route to handle journal entry deletion
+app.delete('/delete-drawing/:drawingId', async (req, res) => {
     try {
-        const deletedEntry = await JournalEntry.findOneAndDelete({ entryTitle, createdAt });
-
-        if (!deletedEntry) {
-            return res.status(404).json({ message: "Entry not found" });
+        const { drawingId } = req.params;
+        if (!mongoose.Types.ObjectId.isValid(drawingId)) {
+            return res.status(400).json({ message: "Invalid drawing ID" });
         }
 
-        res.json({ message: "Journal entry deleted successfully!" });
+        const result = await DrawingEntry.findByIdAndDelete(drawingId);
+
+        if (!result) {
+            return res.status(404).json({ message: "Drawing not found" });
+        }
+
+        console.log(`Drawing with ID ${drawingId} deleted successfully.`);
+        res.status(200).json({ message: "Drawing deleted successfully", drawingId });
+
     } catch (error) {
-        console.error("Error deleting journal entry:", error);
-        res.status(500).json({ message: "Failed to delete journal entry." });
+        console.error("Error deleting drawing:", error);
+        res.status(500).json({ message: "Internal server error" });
     }
 });
+
 
 // Route to get all drawings
 app.get('/get-drawings', async (req, res) => {
@@ -274,6 +294,34 @@ app.delete('/delete-checklist-task/:taskId', async (req, res) => {
         res.status(500).json({ message: "Failed to delete task." });
     }
 });
+
+
+app.delete('/delete-drawing/:drawingId', async (req, res) => {
+    try {
+        const { drawingId } = req.params;
+        
+        if (!mongoose.Types.ObjectId.isValid(drawingId)) {
+            return res.status(400).json({ message: "Invalid drawing ID" });
+        }
+
+        const result = await DrawingEntry.findByIdAndDelete(drawingId);
+
+        if (result) {
+            console.log(`Drawing with ID ${drawingId} deleted successfully.`);
+            res.status(200).json({ message: "Drawing deleted successfully", drawingId });
+        } else {
+            console.log(`Drawing with ID ${drawingId} not found.`);
+            res.status(404).json({ message: "Drawing not found" });
+        }
+    } catch (error) {
+        console.error("Error deleting drawing:", error);
+        res.status(500).json({ message: "Internal server error" });
+    }
+});
+
+  
+  
+  
 
 app.put('/update-checklist-task', async (req, res) => {
     const { taskId, completed } = req.body;

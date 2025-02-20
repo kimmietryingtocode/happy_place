@@ -78,63 +78,110 @@ if (isErasing) {
 
 // Save button
 saveButton.addEventListener("click", async () => {
-const imageData = canvas.toDataURL("image/png");
+  const imageData = canvas.toDataURL("image/png");
 
-try {
-  const response = await fetch('http://localhost:3010/save-drawing', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({ imageData }),
-  });
+  try {
+    const response = await fetch('http://localhost:3010/save-drawing', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ imageData }),
+    });
 
-  if (!response.ok) {
-    throw new Error('Network response was not ok');
+    if (!response.ok) {
+      throw new Error('Network response was not ok');
+    }
+
+    const result = await response.json();
+    const drawingId = result.drawingId; // Use the returned drawingId
+
+    console.log('Saved drawing with ID:', drawingId);
+
+    // Display the new saved drawing immediately
+    displaySavedDrawing(imageData, drawingId);
+  } catch (error) {
+    console.error("Failed to save drawing:", error);
   }
-
-  const result = await response.json();
-  console.log(result.message);
-  displaySavedDrawing(imageData);
-} catch (error) {
-  console.error("Failed to save drawing:", error);
-}
 });
 
 // Fetch and display saved drawings from the server
 async function fetchDrawings() {
   try {
-      const response = await fetch('http://localhost:3010/get-drawings');
-      if (!response.ok) {
-          throw new Error(`Server error: ${response.status} ${response.statusText}`);
-      }
+    const response = await fetch('http://localhost:3010/get-drawings');
+    if (!response.ok) {
+      throw new Error(`Server error: ${response.status} ${response.statusText}`);
+    }
 
-      const drawings = await response.json();
-      drawings.forEach(drawing => {
-          displaySavedDrawing(drawing.imageData);
-      });
+    const drawings = await response.json();
+    drawings.forEach(drawing => {
+      displaySavedDrawing(drawing.imageData, drawing._id); // Pass the drawing ID here
+    });
   } catch (error) {
-      console.error("Error fetching drawings:", error);
+    console.error("Error fetching drawings:", error);
   }
 }
 
+
 // Display saved drawings
-function displaySavedDrawing(imageData) {
-const imageContainer = document.createElement('div');
-imageContainer.className = 'saved-drawing-container';
+function displaySavedDrawing(imageData, drawingId) {
+  const imageContainer = document.createElement('div');
+  imageContainer.className = 'saved-drawing-container';
+  imageContainer.setAttribute('data-drawing-id', drawingId); // Store the drawing ID
 
-const img = document.createElement('img');
-img.src = imageData;
-img.className = 'saved-drawing';
-img.style.width = '200px';
-img.style.height = 'auto';
+  const img = document.createElement('img');
+  img.src = imageData;
+  img.className = 'saved-drawing';
+  img.style.width = '200px';
+  img.style.height = 'auto';
 
-imageContainer.appendChild(img);
+  // Create delete button
+  const deleteButton = document.createElement('button');
+  deleteButton.textContent = 'Delete';
 
-const entryResultRow = document.querySelector('.entryResultRow');
-if (entryResultRow) {
-  entryResultRow.appendChild(imageContainer);
-} else {
-  console.warn('Container for saved drawings not found');
+  // Attach event listener for delete button
+  deleteButton.addEventListener('click', async () => {
+      await deleteDrawing(drawingId);
+      imageContainer.remove(); // Remove from DOM immediately after deletion
+  });
+
+  imageContainer.appendChild(img);
+  imageContainer.appendChild(deleteButton);
+
+  const entryResultRow = document.querySelector('.entryResultRow');
+  if (entryResultRow) {
+      entryResultRow.appendChild(imageContainer);
+  } else {
+      console.warn('Container for saved drawings not found');
+  }
 }
+
+
+// Delete drawing function
+async function deleteDrawing(drawingId) {
+  if (!drawingId) {
+      console.error("Invalid drawing ID");
+      return;
+  }
+
+  try {
+      const response = await fetch(`http://localhost:3010/delete-drawing/${drawingId}`, {
+          method: 'DELETE',
+      });
+
+      if (response.ok) {
+          const data = await response.json();
+          console.log(data.message);
+          // Remove the drawing from the UI
+          const drawingElement = document.querySelector(`[data-drawing-id="${drawingId}"]`);
+          if (drawingElement) {
+              drawingElement.remove();
+          }
+      } else {
+          const errorResponse = await response.json();
+          console.error("Failed to delete drawing:", errorResponse.message);
+      }
+  } catch (error) {
+      console.error("Error deleting drawing:", error);
+  }
 }
