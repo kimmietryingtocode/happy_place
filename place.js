@@ -9,7 +9,7 @@ document.addEventListener("DOMContentLoaded", () => {
             },
             { 
                 iconFile: "images/palette-solid.svg",
-                htmlFile: "whiteboard.html"
+                component: createWhiteboard
             },
             { 
                 iconFile: "images/clipboard-check-solid.svg",
@@ -230,6 +230,220 @@ document.addEventListener("DOMContentLoaded", () => {
 
         entryForm.addEventListener('submit', addEntryToDom);
     }
+
+    function createWhiteboard() {
+        const link = document.createElement('link');
+        link.rel = 'stylesheet';
+        link.href = 'whiteboardWin.css'; 
+        link.type = 'text/css';
+        document.head.appendChild(link);
+    
+        const whiteboard = document.createElement("div");
+        whiteboard.classList.add("whiteboard");
+        
+    
+        const header = document.createElement("div");
+        header.classList.add("header");
+    
+        const title = document.createElement("span");
+        title.innerText = "Whiteboard";
+        header.appendChild(title);
+    
+        const closeButton = document.createElement("span");
+        closeButton.classList.add("close-button");
+        closeButton.innerHTML = "&times;";
+        closeButton.onclick = () => document.body.removeChild(whiteboard);
+        header.appendChild(closeButton);
+
+    
+        // Canvas
+        const canvas = document.createElement("canvas");
+        canvas.id = "whiteboardCanvas";
+        canvas.width = 460;
+        canvas.height = 300;
+        canvas.style.border = "1px solid #919396";
+        canvas.style.backgroundColor = "white";
+        canvas.style.display = "block";
+        canvas.style.margin = "10px auto";
+        canvas.style.boxShadow = "0 2px 4px rgba(16, 16, 16, 0.567)";
+    
+        // Controls
+        const controls = document.createElement("div");
+        controls.classList.add("controls");
+        controls.style.textAlign = "center";
+        controls.style.marginTop = "10px";
+    
+        const colorPicker = document.createElement("input");
+        colorPicker.type = "color";
+        colorPicker.value = "#000000"; 
+        controls.appendChild(colorPicker);
+    
+        const brushSize = document.createElement("input");
+        brushSize.type = "range";
+        brushSize.min = "1";
+        brushSize.max = "10";
+        brushSize.value = "3";
+        controls.appendChild(brushSize);
+    
+        const eraserButton = document.createElement("button");
+        eraserButton.classList.add("button");
+        eraserButton.innerText = "Eraser";
+        controls.appendChild(eraserButton);
+    
+        const clearButton = document.createElement("button");
+        clearButton.classList.add("button");
+        clearButton.innerText = "Clear";
+        controls.appendChild(clearButton);
+    
+        const saveButton = document.createElement("button");
+        saveButton.classList.add("button");
+        saveButton.innerText = "Save";
+        controls.appendChild(saveButton);
+    
+        whiteboard.appendChild(header);
+        whiteboard.appendChild(canvas);
+        whiteboard.appendChild(controls);
+    
+        // Resize handle
+        const resizeHandle = document.createElement("div");
+        resizeHandle.classList.add("resize-handle");
+        whiteboard.appendChild(resizeHandle);
+    
+        document.body.appendChild(whiteboard);
+        dragElement(whiteboard);
+        makeResizable(whiteboard, resizeHandle);
+    
+        // Whiteboard Functionality
+        let drawing = false;
+        let isErasing = false;
+        let lastDrawingColor = "#000000";
+    
+        const ctx = canvas.getContext("2d");
+        ctx.lineWidth = brushSize.value;
+        ctx.lineCap = "round";
+        ctx.strokeStyle = colorPicker.value;
+    
+        canvas.addEventListener("mousedown", () => {
+            drawing = true;
+            ctx.beginPath();
+        });
+    
+        canvas.addEventListener("mouseup", () => {
+            drawing = false;
+            ctx.closePath();
+        });
+    
+        canvas.addEventListener("mousemove", (e) => {
+            if (!drawing) return;
+            ctx.lineTo(e.offsetX, e.offsetY);
+            ctx.stroke();
+            ctx.beginPath();
+            ctx.moveTo(e.offsetX, e.offsetY);
+        });
+    
+        clearButton.addEventListener("click", () => {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+        });
+    
+        colorPicker.addEventListener("input", (e) => {
+            lastDrawingColor = e.target.value;
+            ctx.strokeStyle = lastDrawingColor;
+            isErasing = false;
+            eraserButton.textContent = "Eraser";
+        });
+    
+        brushSize.addEventListener("input", (e) => {
+            ctx.lineWidth = e.target.value;
+        });
+    
+        eraserButton.addEventListener("click", () => {
+            isErasing = !isErasing;
+            if (isErasing) {
+                eraserButton.textContent = "Drawing Mode";
+                ctx.strokeStyle = "#f7f2eb"; 
+            } else {
+                eraserButton.textContent = "Eraser";
+                ctx.strokeStyle = lastDrawingColor;
+            }
+        });
+    
+        saveButton.addEventListener("click", async () => {
+            const imageData = canvas.toDataURL("image/png");
+    
+            try {
+                const response = await fetch('http://localhost:3010/save-drawing', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ imageData }),
+                });
+    
+                if (!response.ok) throw new Error('Failed to save drawing');
+    
+                const result = await response.json();
+                const drawingId = result.drawingId;
+                console.log('Saved drawing with ID:', drawingId);
+                displaySavedDrawing(imageData, drawingId);
+            } catch (error) {
+                console.error("Failed to save drawing:", error);
+            }
+        });
+    
+        async function fetchDrawings() {
+            try {
+                const response = await fetch('http://localhost:3010/get-drawings');
+                if (!response.ok) throw new Error('Server error');
+    
+                const drawings = await response.json();
+                drawings.forEach(drawing => displaySavedDrawing(drawing.imageData, drawing._id));
+            } catch (error) {
+                console.error("Error fetching drawings:", error);
+            }
+        }
+    
+        function displaySavedDrawing(imageData, drawingId) {
+            const imageContainer = document.createElement('div');
+            imageContainer.className = 'saved-drawing-container';
+            imageContainer.setAttribute('data-drawing-id', drawingId);
+    
+            const img = document.createElement('img');
+            img.src = imageData;
+            img.className = 'saved-drawing';
+            img.style.width = '200px';
+            img.style.height = 'auto';
+    
+            const deleteButton = document.createElement('button');
+            deleteButton.textContent = 'Delete';
+            deleteButton.addEventListener('click', async () => {
+                await deleteDrawing(drawingId);
+                imageContainer.remove();
+            });
+    
+            imageContainer.appendChild(img);
+            imageContainer.appendChild(deleteButton);
+            document.body.appendChild(imageContainer);
+        }
+    
+        async function deleteDrawing(drawingId) {
+            try {
+                const response = await fetch(`http://localhost:3010/delete-drawing/${drawingId}`, {
+                    method: 'DELETE',
+                });
+    
+                if (response.ok) {
+                    console.log('Deleted drawing');
+                    document.querySelector(`[data-drawing-id="${drawingId}"]`).remove();
+                } else {
+                    console.error('Failed to delete drawing');
+                }
+            } catch (error) {
+                console.error("Error deleting drawing:", error);
+            }
+        }
+    
+        fetchDrawings();
+    }
+    
+    
 
     function createMoodChecker() {
         const link = document.createElement('link');
@@ -514,48 +728,58 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     function dragElement(element) {
-        let posX = 0, posY = 0, startX = 0, startY = 0;
-        const header = element.querySelector(".header") || element;
-        header.style.cursor = 'move';
-        header.onmousedown = dragMouseDown;
+    let posX = 0, posY = 0, startX = 0, startY = 0;
+    const header = element.querySelector(".header") || element;
+    const canvas = element.querySelector("canvas");
+    
+    let isDragging = false;
 
-        function dragMouseDown(e) {
-            e.preventDefault();
-            startX = e.clientX;
-            startY = e.clientY;
-            document.onmousemove = elementDrag;
-            document.onmouseup = closeDragElement;
-        }
+    header.style.cursor = 'move';
+    header.onmousedown = dragMouseDown;
 
-        function elementDrag(e) {
-            e.preventDefault();
-            posX = startX - e.clientX;
-            posY = startY - e.clientY;
-            startX = e.clientX;
-            startY = e.clientY;
+    // Disable dragging when interacting with the canvas
+    canvas.addEventListener("mousedown", () => isDragging = false);
+    canvas.addEventListener("mouseup", () => isDragging = true);
 
-            let newTop = element.offsetTop - posY;
-            let newLeft = element.offsetLeft - posX;
-
-            const viewportWidth = window.innerWidth;
-            const viewportHeight = window.innerHeight;
-            const elementWidth = element.offsetWidth;
-            const elementHeight = element.offsetHeight;
-
-            if (newTop < 0) newTop = 0;
-            if (newLeft < 0) newLeft = 0;
-            if (newTop + elementHeight > viewportHeight) newTop = viewportHeight - elementHeight;
-            if (newLeft + elementWidth > viewportWidth) newLeft = viewportWidth - elementWidth;
-
-            element.style.top = newTop + "px";
-            element.style.left = newLeft + "px";
-        }
-
-        function closeDragElement() {
-            document.onmouseup = null;
-            document.onmousemove = null;
-        }
+    function dragMouseDown(e) {
+        if (!isDragging) return; // Prevent dragging when drawing
+        e.preventDefault();
+        startX = e.clientX;
+        startY = e.clientY;
+        document.onmousemove = elementDrag;
+        document.onmouseup = closeDragElement;
     }
+
+    function elementDrag(e) {
+        if (!isDragging) return; // Prevent dragging when drawing
+        e.preventDefault();
+        posX = startX - e.clientX;
+        posY = startY - e.clientY;
+        startX = e.clientX;
+        startY = e.clientY;
+
+        let newTop = element.offsetTop - posY;
+        let newLeft = element.offsetLeft - posX;
+
+        const viewportWidth = window.innerWidth;
+        const viewportHeight = window.innerHeight;
+        const elementWidth = element.offsetWidth;
+        const elementHeight = element.offsetHeight;
+
+        if (newTop < 0) newTop = 0;
+        if (newLeft < 0) newLeft = 0;
+        if (newTop + elementHeight > viewportHeight) newTop = viewportHeight - elementHeight;
+        if (newLeft + elementWidth > viewportWidth) newLeft = viewportWidth - elementWidth;
+
+        element.style.top = newTop + "px";
+        element.style.left = newLeft + "px";
+    }
+
+    function closeDragElement() {
+        document.onmouseup = null;
+        document.onmousemove = null;
+    }
+}
 
     function createAmbientSound() {
         // Ensure CSS is loaded
